@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: url("./assets/b.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+
+
