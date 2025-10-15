@@ -6,7 +6,7 @@ export const api = axios.create({
   baseURL: URL_LOCAL,
 });
 
-// Interceptor para enviar el token automáticamente
+
 api.interceptors.request.use(config => {
   const token = localStorage.getItem("token");
   if (token) {
