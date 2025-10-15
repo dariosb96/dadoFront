@@ -1,4 +1,3 @@
-// Redux/actions/Products/get_filtered_products.js
 import { api } from "../../api";
 
 export const GET_FILTERED_PRODUCTS_REQUEST = "GET_FILTERED_PRODUCTS_REQUEST";

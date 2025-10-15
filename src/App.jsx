@@ -6,7 +6,7 @@ import CatalogPage from './Views/CatalogPage'
 import Create_user from './Views/createUser'
 import Login from './Views/LoginPage'
 import Create_Product from './Views/createProduct'
-import Protected_Route from "./components/ProtectedRoute"
+import Protected_Route from './components/Protected_Route'
 import Home from './Views/home';
 import MyCatalogLink from './components/MyCatalogLink'
 import Create_Sell from './Views/createSell'
