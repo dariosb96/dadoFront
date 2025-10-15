@@ -12,11 +12,11 @@ const View_Sells = () => {
   const { sells, loading, error } = useSelector((state) => state.sells);
   const token = localStorage.getItem("token");
 
-  // Estado para confirmar venta
+
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedSell, setSelectedSell] = useState(null);
 
-  // Estado para eliminar venta
+
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [sellToDelete, setSellToDelete] = useState(null);
 
@@ -24,7 +24,7 @@ const View_Sells = () => {
     dispatch(getUserSells(token));
   }, [dispatch, token]);
 
-  // Confirmar venta
+
   const handleModify = (sellId) => {
     setSelectedSell(sellId);
     setModalOpen(true);
@@ -47,7 +47,6 @@ const View_Sells = () => {
     }
   };
 
-  // Eliminar venta
   const handleDeleteClick = (sellId) => {
     setSellToDelete(sellId);
     setDeleteModalOpen(true);
@@ -71,15 +70,32 @@ const View_Sells = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 bg-white shadow rounded relative overflow-x-hidden text-black">
-      {/* Botón volver */}
-      <Link to="/" aria-label="Volver al inicio">
-        <div className="absolute top-4 left-4 z-10">
-          <button className="bg-purple-800 hover:bg-purple-600 text-white font-medium px-3 py-1 rounded-md text-sm transition duration-300">
-            ← Inicio
-          </button>
-        </div>
-      </Link>
+   <div className="w-full px-4 sm:px-6 lg:px-8 py-4 bg-white shadow rounded text-black">
+
+
+<div className="grid grid-cols-2 mb-4">
+  <div className="justify-self-start">
+    <Link to="/" aria-label="Volver al inicio">
+      <button
+        type="button"
+        className="bg-purple-800 hover:bg-gray-500 text-white font-medium px-3 py-1 rounded-md text-sm transition duration-600"
+      >
+        ← Inicio
+      </button>
+    </Link>
+  </div>
+
+  <div className="justify-self-end">
+    <Link to="/createSell" aria-label="Crear venta">
+      <button
+        type="button"
+        className="bg-purple-800 hover:bg-gray-500 text-white font-medium px-3 py-1 rounded-md text-sm transition duration-600"
+      >
+        + Crear venta
+      </button>
+    </Link>
+  </div>
+</div>
 
       <h2 className="text-2xl font-semibold mb-4 mt-12">Todas las Ventas</h2>
 

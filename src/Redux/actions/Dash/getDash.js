@@ -1,4 +1,3 @@
-// src/Redux/actions/Dash/getDash.js
 import { api } from "../../api";
 
 export const fetchDashboardData = () => async (dispatch) => {
@@ -21,13 +20,6 @@ export const fetchDashboardData = () => async (dispatch) => {
       api.get("/dash/sales/user", { headers: noCacheHeaders }),
     ]);
 
-    // logs para debug
-    console.log("API -> salesByDay:", salesByDayRes.data);
-    console.log("API -> salesByMonth:", salesByMonthRes.data);
-    console.log("API -> topProducts:", topProductsRes.data);
-    console.log("API -> salesByUser:", salesByUserRes.data);
-    console.log("API -> summary:", summaryRes.data);
-
     dispatch({
       type: "DASHBOARD_SUCCESS",
       payload: {
@@ -39,7 +31,6 @@ export const fetchDashboardData = () => async (dispatch) => {
       },
     });
   } catch (error) {
-    console.error("fetchDashboardData error:", error);
     dispatch({
       type: "DASHBOARD_FAILURE",
       payload: error.response?.data?.error || error.message,
@@ -58,7 +49,6 @@ export const fetchProfitByRange = (startDate, endDate) => async (dispatch) => {
 
     dispatch({ type: "PROFIT_SUCCESS", payload: data });
   } catch (error) {
-    console.error("fetchProfitByRange error:", error);
     dispatch({
       type: "PROFIT_FAILURE",
       payload: error.response?.data?.error || error.message,

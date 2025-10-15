@@ -10,11 +10,11 @@ const MyCatalogLink = ({ onClose }) => {
 
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  useEffect(() => {
-    if (user) {
-      dispatch(getCategories()); // carga las categorías del usuario
-    }
-  }, [dispatch, user]);
+useEffect(() => {
+  if (user?.id) {
+    dispatch(getCategories(user.id)); 
+  }
+}, [dispatch, user]);
 
   if (!user) {
     return (

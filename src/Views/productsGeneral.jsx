@@ -30,34 +30,46 @@ const AllProductsPage = () => {
     setModalOpen(true);
   };
 
-  const handleDelete = (id) => {
-    dispatch(deleteProduct(id, token));
-    toast.success("Producto eliminado correctamente");
-  };
+const handleDelete = async (id) => {
+  await dispatch(deleteProduct(id, token));
+  toast.success("Producto eliminado correctamente");
+  dispatch(getProducts(token)); // recarga productos desde el backend
+};
 
-  const handleSave = (id, formData) => {
-    // formData es un FormData que incluye la imagen
-    dispatch(updateProduct(id, formData));
-    toast.success("Producto actualizado correctamente");
-    setModalOpen(false);
-    setSelectedProduct(null);
-  };
+const handleSave = async (id, formData) => {
+  await dispatch(updateProduct(id, formData));
+  toast.success("Producto actualizado correctamente");
+  setModalOpen(false);
+  setSelectedProduct(null);
+  dispatch(getProducts(token)); // ✅ recarga productos actualizados
+};
+
 
   if (loading) return <p>Cargando productos...</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="p-4">
-       <Link to="/" aria-label="Volver al inicio">
-        <div className="absolute top-4 left-4 z-10">
-          <button
-            type="button"
-            className="bg-purple-800 hover:bg-gray-500 text-white font-medium px-3 py-1 rounded-md text-sm transition duration-600"
-          >
-            ← Inicio
-          </button>
-        </div>
-      </Link>
+
+<div className="flex justify-between items-center mb-4">
+  <Link to="/" aria-label="Volver al inicio">
+    <button
+      type="button"
+      className="bg-purple-800 hover:bg-gray-500 text-white font-medium px-3 py-1 rounded-md text-sm transition duration-600"
+    >
+      ← Inicio
+    </button>
+  </Link>
+
+  <Link to="/createProd" aria-label="Crear producto">
+    <button
+      type="button"
+      className="bg-purple-800 hover:bg-gray-500 text-white font-medium px-3 py-1 rounded-md text-sm transition duration-600"
+    >
+      + Crear Producto
+    </button>
+  </Link>
+</div>
       <ToastContainer />
       <Navbar />
       <h1 className="text-2xl font-bold mb-4 text-white">Todos los productos</h1>

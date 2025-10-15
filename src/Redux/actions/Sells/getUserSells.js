@@ -1,4 +1,3 @@
-// Redux/actions/Sells/getUserSells.js
 import { api } from "../../api";
 
 export const GET_SELLS_REQUEST = "SELLS_REQUEST";

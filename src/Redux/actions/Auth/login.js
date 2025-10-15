@@ -1,5 +1,5 @@
 
-import axios from "axios";
+import { api } from "../../api";
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
@@ -12,13 +12,7 @@ export const LoginUser = (credentials) => async (dispatch) => {
     try {
         dispatch({ type: LOGIN_REQUEST });
 
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        };
-
-        const { data } = await axios.post(`${LOCAL}/user/login`, credentials, config);
+        const { data } = await api.post(`/user/login`, credentials, );
 
         if (data.userdata && data.userdata.id) {
             localStorage.setItem('token', data.token);

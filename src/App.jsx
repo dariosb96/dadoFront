@@ -14,6 +14,8 @@ import DashboardSPA from './Views/dashSPA'
 import View_Sells from './Views/SellsView'
 import AllProductsPage from './Views/productsGeneral'
 import CatalogList from './Views/CatalogList'
+import UpdateUser from './Views/updateUser'
+import UserProfile from './Views/profile'
 
 function App() {
  DashboardSPA
@@ -34,6 +36,8 @@ function App() {
       <Route path="/dash" element={<DashboardSPA/>} />
       <Route path="/Sells" element={ <View_Sells/>} />
       <Route path="/products" element={<AllProductsPage/>}/>
+      <Route path="/p" element={<UpdateUser/>}/>
+      <Route path="profile" element={<UserProfile/>} />
     </Route>
     </Routes>
     </>

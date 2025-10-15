@@ -1,4 +1,3 @@
-import axios from "axios";
 export const CREATE_USER = "CREATE_USER";
 import { api } from "../../api";
 

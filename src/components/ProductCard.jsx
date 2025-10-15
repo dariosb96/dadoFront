@@ -1,6 +1,7 @@
 import React from "react";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onEdit, onDelete }) => {
+
   return (
     <div className="border p-4 rounded  shadow  bg-white font-bold hover:shadow-lg transition text-shadow-white">
       <h2 className="text-lg text-purple-800 font-bold"> Nombre: {product.name}</h2>
@@ -8,14 +9,19 @@ const ProductCard = ({ product }) => {
       <p className="mt-2 font-semibold"> Precio de venta: ${product.price}</p>
       <p className="mt-2 font-semibold"> Precio de compra: ${product.buyPrice}</p>
       <p className="mt-2 font-semibold"> Piezas disponibles: ${product.stock}</p>
-      {product.image ? (
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-40 object-cover mt-2 rounded"
-        />
+    {product.images && product.images.length > 0 ? (
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          {product.images.map((img, idx) => (
+            <img
+              key={idx}
+              src={img.url}
+              alt={`${product.name}-${idx}`}
+              className="w-full h-32 object-cover rounded"
+            />
+          ))}
+        </div>
       ) : (
-        <div className="w-full h-40 bg-gray-200 flex items-center justify-center mt-2 rounded">
+        <div className="w-full h-32 bg-gray-200 flex items-center justify-center mt-2 rounded">
           <span className="text-gray-500">Sin imagen</span>
         </div>
       )}

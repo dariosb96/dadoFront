@@ -1,14 +1,11 @@
-import axios from "axios";
-const URL_LOCAL = import.meta.env.VITE_URL1;
+import { api } from "../../api";
 
 export const confirmSell = (sellId, token) => async (dispatch) => {
-  dispatch({ type: "SELLS_REQUEST" }); // coincide con tu reducer
-
+  dispatch({ type: "SELLS_REQUEST" }); 
   try {
-    const res = await axios.put(
-      `${URL_LOCAL}/sells/confirm/${sellId}`,
-      {}, // aunque tu backend no necesita body
-      { headers: { Authorization: `Bearer ${token}` } }
+    const res = await api.put(
+      `/sells/confirm/${sellId}`,
+      {},
     );
 
     dispatch({
@@ -16,12 +13,12 @@ export const confirmSell = (sellId, token) => async (dispatch) => {
       payload: res.data,
     });
 
-    return res.data; // importante: permite manejar éxito en el componente
+    return res.data; 
   } catch (error) {
     dispatch({
       type: "SELLS_FAILURE",
       payload: error.response?.data?.message || error.message,
     });
-    throw error; // importante: para que handleConfirm pueda atraparlo
+    throw error; 
   }
 };

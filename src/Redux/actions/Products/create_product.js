@@ -7,8 +7,12 @@ return async dispatch => {
     try{
         const formData = new FormData();
 
-        for(const key in productData){
-            formData.append(key, productData[key]);
+        for (const key in productData) {
+             if (key === "images") {
+             productData.images.forEach((file) => formData.append("images", file));
+             } else {
+                 formData.append(key, productData[key]);
+             }
         }
 
         const response  = await api.post("/products", formData);
