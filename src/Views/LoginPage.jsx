@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { LoginUser } from "../Redux/actions/Auth/login";
 import { Link, useNavigate } from "react-router-dom";
 import logo from '../assets/logo.png' ; 
-import Navbar from "../components/NavBar";
+
 
 
 const Login = () => {
@@ -31,7 +31,7 @@ const Login = () => {
 
   return (
     
-     <div className="min-h-screen flex flex-col"><Navbar/>
+     <div className="min-h-screen flex flex-col">
     {/* Logo arriba */}
     <div className="flex justify-center mt-6">
       <img

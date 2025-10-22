@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import MyCatalogLink from "../components/MyCatalogLink";
+import Navbar from "../components/NavBar";
+
 
 const Home = () => {
 
@@ -12,6 +14,7 @@ const Home = () => {
   return (
     
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Navbar/>
          
      <h1 className="text-black p-8">{user.businessName} </h1>
       {/* Dashboard con tres cards */}
