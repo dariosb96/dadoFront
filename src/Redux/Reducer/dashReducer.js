@@ -1,10 +1,9 @@
-// src/Redux/Reducer/dashReducer.js
 const initialState = {
-  summary: {},          // objeto con totals desde backend (o vacío)
-  salesByDay: [],       // array del backend
-  salesByMonth: [],     // array del backend
-  topProducts: [],      // array del backend
-  salesByUser: [],      // array del backend
+  summary: {},        
+  salesByDay: [],     
+  salesByMonth: [],     
+  topProducts: [],      
+  salesByUser: [],     
   profitByRange: null,
   loading: false,
   error: null,

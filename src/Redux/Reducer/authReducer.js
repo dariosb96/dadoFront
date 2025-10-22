@@ -1,4 +1,3 @@
-// src/Redux/reducers/authReducer.js
 const token = localStorage.getItem("token");
 
 const initialState = {

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { createUser } from "../Redux/actions/Auth/create_user";
 import { Link, useNavigate } from "react-router-dom";
+import logo from '../assets/logo.png' ; 
 
 const Create_user = () => {
   const [user, setUser] = useState({
@@ -50,9 +51,18 @@ const Create_user = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-full px-4">
-      <div className="h-screen bg-white top-10 relative">
-        {/* Botón de regreso */}
+    <div className="min-h-screen flex flex-col">
+    {/* Logo arriba */}
+    <div className="flex justify-center mt-6">
+      <img
+        src={logo}
+        alt="Logo"
+        className="w-32 h-auto object-contain"
+      />
+    </div>
+   <div className="content max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+    
+      <div className="bg-white top-10 relative">
         <Link to="/" aria-label="Volver al inicio">
           <div className="absolute top-4 left-4 z-10">
             <button
@@ -109,7 +119,7 @@ const Create_user = () => {
               name="image"
               accept="image/*"
               onChange={handleImageChange}
-              className="w-full mt-2"
+              className="w-full mt-2 bg-white"
             />
 
             <button
@@ -121,6 +131,7 @@ const Create_user = () => {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 };

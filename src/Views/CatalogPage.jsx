@@ -48,7 +48,7 @@ const CatalogPage = () => {
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold mb-1 text-black">
+      <h1 className="bg-white text-2xl font-bold mb-1 text-black">
         {businessName || "Catálogo"}
       </h1>
       <h2 className="text-lg mb-4 text-gray-700">{categoryName}</h2>
@@ -64,9 +64,8 @@ const CatalogPage = () => {
               className="border p-4 rounded shadow hover:shadow-lg transition bg-white"
             >
               <h2 className="text-lg font-semibold">{product.name}</h2>
-              <p className="text-sm text-gray-500">{product.Category?.name}</p>
-              <p className="mt-2 font-bold">${product.price}</p>
-
+                    <p className="mt-2 font-bold">${product.price}</p>
+              <p className="mt-2 font-semibold"> Piezas disponibles: {product.stock}</p>
               {images.length > 0 ? (
                 <div className="mt-2 w-full flex flex-col items-center">
                   <div className="relative w-full aspect-[4/3] bg-gray-100 rounded overflow-hidden flex items-center justify-center">

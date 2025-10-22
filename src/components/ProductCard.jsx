@@ -8,7 +8,7 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
       <p className="text-sm text-black font-semibold">Categoria: {product.Category?.name}</p>
       <p className="mt-2 font-semibold"> Precio de venta: ${product.price}</p>
       <p className="mt-2 font-semibold"> Precio de compra: ${product.buyPrice}</p>
-      <p className="mt-2 font-semibold"> Piezas disponibles: ${product.stock}</p>
+      <p className="mt-2 font-semibold"> Piezas disponibles: {product.stock}</p>
     {product.images && product.images.length > 0 ? (
         <div className="mt-2 grid grid-cols-2 gap-2">
           {product.images.map((img, idx) => (
