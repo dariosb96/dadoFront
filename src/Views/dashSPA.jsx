@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDashboardData } from "../Redux/actions/Dash/getDash";
@@ -13,153 +13,133 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
 
-export default function DashboardSPA() {
+const Dashboard = () => {
   const dispatch = useDispatch();
-  const { salesByDay, salesByMonth, topProducts, salesByUser, loading, error } =
+  const { loading, salesByDay, salesByMonth, topProducts, salesByUser, error } =
     useSelector((state) => state.dashboard);
+
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     dispatch(fetchDashboardData());
   }, [dispatch]);
 
-  // ✅ Formateamos datos según back
-  const formattedSalesByDay = (salesByDay || []).map((s) => ({
-    day: s.day,
-    total: Number(s.totalSales) || 0,
+  const handleFilter = () => {
+    if (!startDate || !endDate) return alert("Selecciona ambas fechas");
+    dispatch(fetchDashboardData(startDate, endDate));
+  };
+
+  const formattedSalesByDay = (salesByDay || []).map((d) => ({
+    date: d.day ? format(parseISO(d.day), "dd MMM", { locale: es }) : "N/D",
+    totalSales: Number(d.totalSales) || 0,
   }));
 
-  const formattedSalesByMonth = (salesByMonth || []).map((s) => ({
-    month: s.month || "Sin mes",
-    total: Number(s.totalSales) || 0,
+  const formattedSalesByMonth = (salesByMonth || []).map((d) => ({
+    month: d.month || "N/D",
+    totalSales: Number(d.totalSales) || 0,
   }));
 
   const formattedTopProducts = (topProducts || []).map((p) => ({
-    name: p.Product?.name || "Desconocido",
+    name: p.product?.name || "Sin nombre",
     totalSold: Number(p.totalSold) || 0,
+    image: p.product?.images?.[0]?.url || null, 
   }));
 
   const formattedSalesByUser = (salesByUser || []).map((u) => ({
-    user: u["Sell.User.name"] || "Desconocido",
+    name: u["Sell.User.name"] || "Usuario desconocido",
     totalSales: Number(u.totalSales) || 0,
   }));
 
-  // ✅ Calculamos resumen en frontend
-  const summary = {
-    todaySales: formattedSalesByDay.reduce((acc, s) => acc + s.total, 0),
-    monthSales: formattedSalesByMonth.reduce((acc, s) => acc + s.total, 0),
-    totalProducts: formattedTopProducts.length,
-    totalUsers: formattedSalesByUser.length,
-  };
+  if (loading) return <p className="text-center mt-8">Cargando datos...</p>;
+  if (error) return <p className="text-center text-red-500 mt-8">{error}</p>;
 
-  console.log("formattedSalesByDay:", formattedSalesByDay);
-  console.log("formattedSalesByMonth:", formattedSalesByMonth);
-  console.log("formattedTopProducts:", formattedTopProducts);
-  console.log("formattedSalesByUser:", formattedSalesByUser);
-  console.log("calculated summary:", summary);
+  return (
 
-  if (loading) return <p>Cargando dashboard...</p>;
-  if (error) return <p>Error: {error}</p>;
+      
+    <div className="p-6 space-y-10 ">
+      <Link to ="/">
+      <button className="bg-purple-800 text-white"> Inicio
+        </button></Link> 
+      <h1 className="text-3xl  text-black font-bold mb-4">Dashboard de Ventas</h1>
 
-return (
-  <div className="p-6 bg-gray-100 min-h-screen">
-    {/* Botón de inicio (arriba del form) */}
-   <div className="mb-4 flex justify-start">
-  <Link to="/" aria-label="Volver al inicio">
-    <button
-      type="button"
-      className="bg-purple-800 hover:bg-purple-500 text-white font-medium px-3 py-1 rounded-md text-sm transition duration-300"
-    >
-      ← Inicio
-    </button>
-  </Link>
-</div>
-
-
-
-    {/* Título */}
-    <h1 className="text-3xl font-bold mb-6 text-black">
-      Panel de Administración
-    </h1>
-
-      {/* Resumen */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-sm text-gray-500">Ventas Hoy</h2>
-          <p className="text-xl font-bold text-black">{summary.todaySales}</p>
+      {/* === FILTRO DE FECHAS === */}
+      <div className="flex gap-4 items-center">
+        <div>
+          <label className="block text-black text-sm font-medium">Desde:</label>
+          <input
+            type="date"
+            className="border rounded-lg px-2 py-1"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
         </div>
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-sm text-gray-500">Ventas del Mes</h2>
-          <p className="text-xl font-bold text-black">{summary.monthSales}</p>
+
+        <div>
+          <label className="block text-black text-sm font-medium">Hasta:</label>
+          <input
+            type="date"
+            className="border rounded-lg px-2 py-1"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
         </div>
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-sm text-gray-500">Usuarios Totales</h2>
-          <p className="text-xl font-bold text-black">{summary.totalUsers}</p>
-        </div>
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-sm text-gray-500">Productos Totales</h2>
-          <p className="text-xl font-bold text-black">{summary.totalProducts}</p>
-        </div>
+
+        <button
+          onClick={handleFilter}
+          className="bg-blue-600 text-black px-4 py-2 rounded-lg hover:bg-blue-700"
+        >
+          Filtrar
+        </button>
       </div>
 
-      {/* Gráficos */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Ventas por Día */}
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-lg font-bold mb-4 text-black">Ventas por Día</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={formattedSalesByDay}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="total" stroke="#8884d8" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+      {/* === GRÁFICO: Ventas por Día === */}
+      <section>
+        <h2 className="text-xl text-black font-semibold mb-2">Ventas por Día</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={formattedSalesByDay}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Line type="monotone" dataKey="totalSales" stroke="#8884d8" strokeWidth={2} />
+          </LineChart>
+        </ResponsiveContainer>
+      </section>
 
-        {/* Ventas por Mes */}
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-lg font-bold mb-4 text-black">Ventas por Mes</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={formattedSalesByMonth}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="total" stroke="#82ca9d" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+      {/* === GRÁFICO: Productos más vendidos === */}
+      <section>
+        <h2 className="text-xl font-semibold mb-2">
+          Productos más vendidos {startDate && endDate && `(${startDate} → ${endDate})`}
+        </h2>
 
-        {/* Productos más vendidos */}
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-lg font-bold mb-4 text-gray-700">Productos Más Vendidos</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={formattedTopProducts}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="totalSold" fill="#ffc658" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {formattedTopProducts.map((p, i) => (
+            <div key={i} className="bg-white shadow rounded-2xl p-3 hover:shadow-lg transition">
+              {p.image ? (
+                <img
+                  src={p.image}
+                  alt={p.name}
+                  className="w-full h-40 object-cover rounded-xl"
+                />
+              ) : (
+                <div className="w-full h-40 black rounded-xl flex items-center justify-center text-gray-500">
+                  Sin imagen
+                </div>
+              )}
 
-        {/* Ventas por Usuario */}
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-lg font-bold mb-4 text-gray-800">Ventas por Usuario</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={formattedSalesByUser}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="user" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="totalSales" fill="#d88484" />
-            </BarChart>
-          </ResponsiveContainer>
+              <h4 className="mt-3 font-semibold text-lg">{p.name}</h4>
+              <p className="text-black text-sm">Vendidos: {p.totalSold}</p>
+            </div>
+          ))}
         </div>
-      </div>
+      </section>
     </div>
+
   );
-}
+};
+
+export default Dashboard;

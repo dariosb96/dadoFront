@@ -2,6 +2,162 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCatalogByUser } from "../Redux/actions/Products/catalog_actions";
 import { useParams, useSearchParams } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import logo from "../assets/logo-black.png";
+
+const normalizeImages = (images) => {
+  if (!images) return [];
+  if (!Array.isArray(images)) return [];
+  return images
+    .map((it) => {
+      if (!it) return null;
+      if (typeof it === "string") return { url: it };
+      if (typeof it === "object") {
+        return { url: it.url || it.path || it.secure_url || it.src || it.image || null };
+      }
+      return null;
+    })
+    .filter((i) => i && !!i.url);
+};
+
+const ImageCarousel = ({ images = [], fixedHeight = 200 }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const imgs = normalizeImages(images);
+
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [images]);
+
+  if (!imgs.length) {
+    return (
+      <div
+        className="w-full bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden"
+        style={{ height: fixedHeight, minHeight: fixedHeight, maxHeight: fixedHeight }}
+      >
+        <span className="text-gray-500">Sin imagen</span>
+      </div>
+    );
+  }
+
+  const prevImage = () =>
+    setCurrentIndex((prev) => (prev === 0 ? imgs.length - 1 : prev - 1));
+  const nextImage = () =>
+    setCurrentIndex((prev) => (prev === imgs.length - 1 ? 0 : prev + 1));
+
+  return (
+    <div className="w-full flex flex-col items-center">
+      <div
+        className="w-full rounded-lg overflow-hidden flex items-center justify-center "
+        style={{
+          height: fixedHeight,
+          minHeight: fixedHeight,
+          maxHeight: fixedHeight,
+          width: "100%",
+          position: "relative",
+        }}
+      >
+        <img
+          src={imgs[currentIndex].url}
+          alt={`imagen-${currentIndex}`}
+          className="transition-all duration-300"
+          style={{
+            maxHeight: "100%",
+            maxWidth: "100%",
+            objectFit: "contain",
+            display: "block",
+          }}
+        />
+      </div>
+
+      {imgs.length > 1 && (
+        <div className="flex justify-center items-center gap-3 mt-2">
+          <button
+            onClick={prevImage}
+            className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-700"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <span className="text-xs text-white px-2 py-0.5 rounded bg-black/40">
+            {currentIndex + 1} / {imgs.length}
+          </span>
+          <button
+            onClick={nextImage}
+            className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-700"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const CatalogProductCard = ({ product }) => {
+  const [showVariant, setShowVariant] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState(null);
+
+  const productImages = normalizeImages(product?.images);
+  const variants = Array.isArray(product?.variants) ? product.variants : [];
+
+  const handleVariantClick = (variant) => {
+    const vImages = normalizeImages(variant?.images);
+    const finalImages = vImages.length ? vImages : productImages;
+    setSelectedVariant({ ...variant, _images: finalImages });
+    setShowVariant(true);
+  };
+
+  const handleBack = () => {
+    setSelectedVariant(null);
+    setShowVariant(false);
+  };
+
+  const active = showVariant ? selectedVariant : product;
+
+  return (
+    <div className="border p-4 rounded-xl shadow bg-white hover:shadow-lg transition-all font-medium text-black flex flex-col gap-3 min-w-0">
+      <h2 className="text-lg font-bold text-purple-800 break-words">
+        {active?.name || product.name}
+      </h2>
+      <p className="text-sm text-gray-700">
+        Categoría: {product.Category?.name || "Sin categoría"}
+      </p>
+      <p className="text-purple-700 font-bold">Precio: ${active?.price ?? product.price}</p>
+      <p className="text-sm text-gray-600">Piezas disponibles: {active?.stock ?? product.stock}</p>
+
+      <ImageCarousel images={active?._images ?? productImages} fixedHeight={180} />
+
+      {!showVariant ? (
+        variants.length > 0 && (
+          <div className="mt-3">
+            <h3 className="text-sm text-gray-600 font-medium mb-2">Variantes:</h3>
+            <div className="flex flex-wrap gap-2">
+              {variants.map((variant) => (
+                <button
+                  key={variant.id ?? variant.uid ?? Math.random()}
+                  onClick={() => handleVariantClick(variant)}
+                  className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium hover:bg-purple-200 transition"
+                >
+                  {variant.color
+                    ? variant.color
+                    : variant.size
+                    ? `T:${variant.size}`
+                    : "Variante"}
+                </button>
+              ))}
+            </div>
+          </div>
+        )
+      ) : (
+        <button
+          onClick={handleBack}
+          className="bg-purple-700 mt-3 text-sm text-white hover:underline"
+        >
+          ← Volver al producto
+        </button>
+      )}
+    </div>
+  );
+};
 
 const CatalogPage = () => {
   const dispatch = useDispatch();
@@ -9,12 +165,8 @@ const CatalogPage = () => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
 
-  const { catalog, loading, error, businessName } = useSelector(
-    (state) => state.catalog
-  );
-
-  const [categoryName, setCategoryName] = useState("CATÁLOGO COMPLETO");
-  const [currentIndexes, setCurrentIndexes] = useState({});
+  const { catalog, loading, error, businessName } = useSelector((state) => state.catalog);
+  const [categoryName, setCategoryName] = useState("Catálogo completo");
 
   useEffect(() => {
     if (userId) dispatch(fetchCatalogByUser(userId, category));
@@ -23,87 +175,35 @@ const CatalogPage = () => {
   useEffect(() => {
     if (catalog?.length && category) {
       const cat = catalog.find((p) => p.Category?.id === category);
-      setCategoryName(cat?.Category?.name || "CATÁLOGO COMPLETO");
+      setCategoryName(cat?.Category?.name || "Catálogo completo");
     } else {
-      setCategoryName("CATÁLOGO COMPLETO");
+      setCategoryName("Catálogo completo");
     }
   }, [catalog, category]);
 
-  const handleNext = (productId, imagesLength) => {
-    setCurrentIndexes((prev) => ({
-      ...prev,
-      [productId]: ((prev[productId] ?? 0) + 1) % imagesLength,
-    }));
-  };
-
-  const handlePrev = (productId, imagesLength) => {
-    setCurrentIndexes((prev) => ({
-      ...prev,
-      [productId]: ((prev[productId] ?? 0) - 1 + imagesLength) % imagesLength,
-    }));
-  };
-
-  if (loading) return <p className="p-4 text-center">Cargando...</p>;
+  if (loading) return <p className="p-4 text-center text-gray-600">Cargando catálogo...</p>;
   if (error) return <p className="p-4 text-center text-red-500">Error: {error}</p>;
 
   return (
-    <div className="p-4 bg-gray-100 min-h-screen">
-      <h1 className="bg-white text-2xl font-bold mb-1 text-black">
+    <div className="min-h-screen text-black ">
+      <div className="w-full flex justify-center items-center">
+        <img src={logo} alt="Logo" className="w-10 h-auto object-contain p-1" />
+      </div>
+
+      <h1 className="text-purple-700 text-3xl font-bold italic text-center mt-2 mb-4 drop-shadow-md">
         {businessName || "Catálogo"}
       </h1>
-      <h2 className="text-lg mb-4 text-gray-700">{categoryName}</h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-black">
-        {catalog?.map((product) => {
-          const images = product.images || [];
-          const currentIndex = currentIndexes[product.id] ?? 0;
-
-          return (
-            <div
-              key={product.id}
-              className="border p-4 rounded shadow hover:shadow-lg transition bg-white"
-            >
-              <h2 className="text-lg font-semibold">{product.name}</h2>
-                    <p className="mt-2 font-bold">${product.price}</p>
-              <p className="mt-2 font-semibold"> Piezas disponibles: {product.stock}</p>
-              {images.length > 0 ? (
-                <div className="mt-2 w-full flex flex-col items-center">
-                  <div className="relative w-full aspect-[4/3] bg-gray-100 rounded overflow-hidden flex items-center justify-center">
-                    <img
-                      src={images[currentIndex].url}
-                      alt={product.name}
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-
-                  {images.length > 1 && (
-                    <div className="flex justify-between items-center w-full mt-2 px-4">
-                      <button
-                        onClick={() => handlePrev(product.id, images.length)}
-                        className="text-gray-400 text-sm font-bold hover:text-gray-600 transition"
-                      >
-                        ‹
-                      </button>
-                      <span className="text-gray-500 text-xs">
-                        {currentIndex + 1} / {images.length}
-                      </span>
-                      <button
-                        onClick={() => handleNext(product.id, images.length)}
-                        className="text-gray-400 text-sm font-bold hover:text-gray-600 transition"
-                      >
-                        ›
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="w-full aspect-[4/3] bg-gray-200 flex items-center justify-center mt-2 rounded">
-                  <span className="text-gray-500">Sin imagen</span>
-                </div>
-              )}
-            </div>
-          );
-        })}
+      <div className="bg-white max-w-7xl mx-auto px-4 py-6 rounded-xl shadow-lg">
+        {catalog?.length ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 items-stretch">
+            {catalog.map((product) => (
+              <CatalogProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">No hay productos.</p>
+        )}
       </div>
     </div>
   );

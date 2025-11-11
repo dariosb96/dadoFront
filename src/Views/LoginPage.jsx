@@ -32,6 +32,9 @@ const Login = () => {
   return (
     
      <div className="min-h-screen flex flex-col">
+
+<img className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" src="/docs/images/people/profile-picture-5.jpg" alt="Bordered avatar"/>
+
     {/* Logo arriba */}
     <div className="flex justify-center mt-6">
       <img
@@ -41,7 +44,7 @@ const Login = () => {
       />
     </div>
       <div className="content max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-        {/* Logo arriba */}
+
        
 
         <h1 className="text-black text-2xl mb-6 text-center">Iniciar sesión</h1>

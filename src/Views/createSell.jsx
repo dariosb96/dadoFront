@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -5,6 +6,7 @@ import { toast } from "react-toastify";
 import { getCategories } from "../Redux/actions/Products/get_categories";
 import { createSell } from "../Redux/actions/Sells/createSell";
 import { getFilteredProducts } from "../Redux/actions/Products/get_filteredProducts";
+
 
 const Create_Sell = () => {
   const dispatch = useDispatch();
@@ -19,6 +21,7 @@ const Create_Sell = () => {
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedProduct, setSelectedProduct] = useState("");
+  const [selectedVariant, setSelectedVariant] = useState(""); 
   const [quantity, setQuantity] = useState(1);
   const [sellProducts, setSellProducts] = useState([]);
   const [search, setSearch] = useState("");
@@ -39,7 +42,6 @@ const Create_Sell = () => {
     }
   }, [dispatch, search]);
 
-  // Función para agregar productos
   const handleAddProduct = () => {
     if (!selectedProduct) {
       toast.error("Selecciona un producto válido");
@@ -52,48 +54,59 @@ const Create_Sell = () => {
     }
 
     const product = products.find((p) => p.id === selectedProduct);
-
     if (!product) {
       toast.error("Producto no encontrado");
       return;
     }
 
-    const existing = sellProducts.find((p) => p.ProductId === selectedProduct);
+    const variant =
+      product.variants?.find((v) => v.id === selectedVariant) || null;
+
+ 
+    const availableStock = variant ? variant.stock : product.stock;
+    const key = variant ? `${selectedProduct}-${variant.id}` : selectedProduct;
+
+    const existing = sellProducts.find((p) => p.key === key);
     const totalQuantity = existing ? existing.quantity + quantity : quantity;
 
-    if (totalQuantity > product.stock) {
-      toast.error(`Stock insuficiente. Disponible: ${product.stock}`);
+    if (totalQuantity > availableStock) {
+      toast.error(`Stock insuficiente. Disponible: ${availableStock}`);
       return;
     }
+
+    const newItem = {
+      key,
+      ProductId: selectedProduct,
+      variantId: variant ? variant.id : null,
+      quantity,
+      name: product.name,
+      variantLabel: variant
+        ? `${variant.color || ""} ${variant.size || ""}`.trim()
+        : null,
+    };
 
     if (existing) {
       setSellProducts(
         sellProducts.map((p) =>
-          p.ProductId === selectedProduct
-            ? { ...p, quantity: totalQuantity }
-            : p
+          p.key === key ? { ...p, quantity: totalQuantity } : p
         )
       );
     } else {
-      setSellProducts([...sellProducts, { ProductId: selectedProduct, quantity }]);
+      setSellProducts([...sellProducts, newItem]);
     }
 
     setSelectedProduct("");
+    setSelectedVariant("");
     setQuantity(1);
     toast.success(`Producto agregado: ${product.name} x${quantity}`);
   };
 
-  // Eliminar producto
-  const handleRemoveProduct = (id) => {
-    setSellProducts(sellProducts.filter((p) => p.ProductId !== id));
-    const product = products.find((p) => p.id === id);
-    if (product) toast.info(`Producto eliminado: ${product.name}`);
+  const handleRemoveProduct = (key) => {
+    setSellProducts(sellProducts.filter((p) => p.key !== key));
   };
 
-  // Enviar venta
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (sellProducts.length === 0) {
       setMessage("Debes agregar al menos un producto a la venta");
       setMessageType("error");
@@ -105,9 +118,7 @@ const Create_Sell = () => {
       setMessage("Venta registrada con éxito");
       setMessageType("success");
 
-      setTimeout(() => {
-        navigate("/home");
-      }, 1500);
+      setTimeout(() => navigate("/home"), 1500);
     } catch (error) {
       setMessage(error?.response?.data?.error || "Error al registrar venta");
       setMessageType("error");
@@ -146,7 +157,9 @@ const Create_Sell = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Categoría */}
         <div>
-          <label className="block text-gray-700 font-semibold mb-2">Seleccionar categoría</label>
+          <label className="block text-gray-700 font-semibold mb-2">
+            Seleccionar categoría
+          </label>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
@@ -161,21 +174,47 @@ const Create_Sell = () => {
           </select>
         </div>
 
-        {/* Selección de producto y cantidad */}
+        {/* Selección de producto y variante */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
           <select
             value={selectedProduct}
-            onChange={(e) => setSelectedProduct(e.target.value)}
+            onChange={(e) => {
+              setSelectedProduct(e.target.value);
+              setSelectedVariant("");
+            }}
             className="flex-grow bg-gray-100 border border-purple-500 rounded-md px-4 py-2 text-gray-800"
           >
-            <option value="">  Selecciona un producto </option>
+            <option value="">Selecciona un producto</option>
             {Array.isArray(products) &&
               products.map((prod) => (
                 <option key={prod.id} value={prod.id}>
-                  {prod.name} (Stock: {prod.stock})
+                  {prod.name}
                 </option>
               ))}
           </select>
+
+          {/* Dropdown de variantes (si el producto tiene) */}
+          {selectedProduct &&
+            products.find((p) => p.id === selectedProduct)?.variants?.length >
+              0 && (
+              <select
+                value={selectedVariant}
+                onChange={(e) => setSelectedVariant(e.target.value)}
+                className="flex-grow bg-gray-100 border border-purple-500 rounded-md px-4 py-2 text-gray-800"
+              >
+                <option value="">Selecciona una variante</option>
+                {products
+                  .find((p) => p.id === selectedProduct)
+                  ?.variants.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.color || v.size
+                        ? `${v.color || ""} ${v.size || ""}`.trim()
+                        : `Variante sin nombre`}{" "}
+                      (Stock: {v.stock})
+                    </option>
+                  ))}
+              </select>
+            )}
 
           <input
             type="number"
@@ -194,34 +233,40 @@ const Create_Sell = () => {
           </button>
         </div>
 
-        {/* Productos seleccionados */}
+        {/* Lista de productos seleccionados */}
         {sellProducts.length > 0 && (
           <div className="bg-gray-100 p-4 rounded-lg shadow-sm overflow-x-auto">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">Productos seleccionados</h3>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              Productos seleccionados
+            </h3>
             <ul className="space-y-2">
-              {sellProducts.map((p) => {
-                const prod = products.find((prod) => prod.id === p.ProductId);
-                return (
-                  <li
-                    key={p.ProductId}
-                    className="flex justify-between text-black items-center bg-white p-2 rounded shadow"
+              {sellProducts.map((p) => (
+                <li
+                  key={p.key}
+                  className="flex justify-between text-black items-center bg-white p-2 rounded shadow"
+                >
+                  <span>
+                    {p.name}{" "}
+                    {p.variantLabel && (
+                      <span className="text-sm text-gray-500">
+                        ({p.variantLabel})
+                      </span>
+                    )}{" "}
+                    --- Cantidad: {p.quantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveProduct(p.key)}
+                    className="text-red-500 font-bold hover:text-red-700"
                   >
-                    <span>
-                      {prod ? prod.name : "Producto"} --- Cantidad: {p.quantity}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveProduct(p.ProductId)}
-                      className="text-red-500 font-bold hover:text-red-700"
-                    >
-                      ✕
-                    </button>
-                  </li>
-                );
-              })}
+                    ✕
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
         )}
+
         <button
           type="submit"
           className="w-full bg-purple-800 text-white py-2 px-4 rounded-lg hover:bg-purple-600 transition"

@@ -6,7 +6,7 @@ export const deleteProduct = (id_product, token) => {
         dispatch({type: DELETE_PRODUCT});
 
         try{            
-            await api.delete(`$/products/${id_product}`);
+            await api.delete(`/products/${id_product}`);
             dispatch({type: DELETE_PRODUCT, payload: id_product});
         }catch(error){
             return ({error: error.message});

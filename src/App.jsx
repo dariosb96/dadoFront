@@ -10,7 +10,7 @@ import Protected_Route from './components/Protected_Route'
 import Home from './Views/home';
 import MyCatalogLink from './components/MyCatalogLink'
 import Create_Sell from './Views/createSell'
-import DashboardSPA from './Views/dashSPA'
+import Dashboard from './Views/dashSPA'
 import View_Sells from './Views/SellsView'
 import AllProductsPage from './Views/productsGeneral'
 import CatalogList from './Views/CatalogList'
@@ -18,7 +18,7 @@ import UpdateUser from './Views/updateUser'
 import UserProfile from './Views/profile'
 
 function App() {
- DashboardSPA
+ 
   return (
     <>
     <Routes>
@@ -33,7 +33,7 @@ function App() {
       <Route path="/createProd" element={<Create_Product/>} />
       <Route path="/my-catalog" element={<MyCatalogLink/>}/>
       <Route path="/createSell" element={<Create_Sell/>}/>
-      <Route path="/dash" element={<DashboardSPA/>} />
+      <Route path="/dash" element={<Dashboard/>} />
       <Route path="/Sells" element={ <View_Sells/>} />
       <Route path="/products" element={<AllProductsPage/>}/>
       <Route path="/p" element={<UpdateUser/>}/>

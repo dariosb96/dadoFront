@@ -5,7 +5,7 @@ import { catalogReducer } from "./catalogReducer";
 import { sellsReducer } from "./sellsReducer";
 import { categoriesReducer } from "./categoriesReducer";
 import { filteredProductsReducer } from "./filteredProdReducer";
-import { dashboardReducer } from "./dashReducer";
+import {dashboardReducer}  from "./dashReducer";
 
 const rootReducer = combineReducers ({
     auth: authReducer,

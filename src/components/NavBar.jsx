@@ -117,7 +117,9 @@ const ventasRef = useRef(null);
                 </div>
               )}
             </div>
-
+<a href="/profile" className="text-white hover:text-purple-300">
+              Perfil
+            </a>
             <a href="/dash" className="text-white hover:text-purple-300">
               Dashboard
             </a>
@@ -211,6 +213,13 @@ const ventasRef = useRef(null);
             onClick={() => setIsOpen(false)}
           >
             Dashboard
+          </a>
+           <a
+            href="/profile"
+            className="block px-4 py-2 hover:bg-purple-600 text-white"
+            onClick={() => setIsOpen(false)}
+          >
+            Perfil
           </a>
 
           <LogOutButton />

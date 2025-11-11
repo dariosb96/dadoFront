@@ -20,9 +20,6 @@ case "LOGIN_SUCCESS":
     token: action.payload.token,
     loading: false,
   };
-
-
-      
     case "LOGIN_FAILURE":
       return { ...state, error: action.payload, loading: false };
     case "LOGOUT":

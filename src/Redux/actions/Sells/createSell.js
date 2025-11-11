@@ -10,7 +10,7 @@ export const createSell = (products) => async (dispatch) => {
     const response = await api.post("/sells", { products });
 
     dispatch({ type: CREATE_SELL_SUCCESS, payload: response.data });
-    return response.data; // devolvemos la venta creada para que el front pueda usarla
+    return response.data; 
 
   } catch (error) {
     dispatch({
@@ -18,6 +18,6 @@ export const createSell = (products) => async (dispatch) => {
       payload: error.response?.data?.error || "Error al crear venta",
     });
 
-    throw error; // importante para que el componente lo atrape en el try/catch
+    throw error; 
   }
 };

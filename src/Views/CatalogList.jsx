@@ -21,9 +21,9 @@ export default function CatalogList() {
   if (!catalogs || catalogs.length === 0) return <p className="text-gray-600 text-center mt-6">No hay catálogos disponibles</p>;
 
   return (
-    <div className="min-h-screen text-black bg-white py-10 px-4">
-      <h1> CATALOGOS PUBLICOS DISPONIBLES</h1>
-      <div className="max-w-6xl mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+    <div className="min-h-screen text-black bg-white py-5 px-4">
+      <h1> Catálogos públicos</h1>
+      <div className="max-w-6xl mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-3 py-5">
         {catalogs.map((c) => (
           <div
             key={c.id}

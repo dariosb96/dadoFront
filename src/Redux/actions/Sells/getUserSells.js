@@ -8,7 +8,7 @@ export const getUserSells = () => async (dispatch) => {
   dispatch({ type: GET_SELLS_REQUEST });
 
   try {
-    const response = await api.get("/sells"); // usa la instancia api
+    const response = await api.get("/sells"); 
     dispatch({
       type: GET_SELLS_SUCCESS,
       payload: response.data,

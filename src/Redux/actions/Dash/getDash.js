@@ -1,57 +1,41 @@
 import { api } from "../../api";
 
-export const fetchDashboardData = () => async (dispatch) => {
-  dispatch({ type: "DASHBOARD_REQUEST" });
+// Acción principal: carga dashboard + productos con filtro opcional
+export const fetchDashboardData =
+  (startDate = null, endDate = null) =>
+  async (dispatch) => {
+    dispatch({ type: "DASHBOARD_REQUEST" });
 
-  try {
-    const noCacheHeaders = { "Cache-Control": "no-cache" };
+    try {
+      const noCacheHeaders = { "Cache-Control": "no-cache" };
 
-    const [
-      summaryRes,
-      salesByDayRes,
-      salesByMonthRes,
-      topProductsRes,
-      salesByUserRes,
-    ] = await Promise.all([
-      api.get("/dash/", { headers: noCacheHeaders }),
-      api.get("/dash/sales/day", { headers: noCacheHeaders }),
-      api.get("/dash/sales/month", { headers: noCacheHeaders }),
-      api.get("/dash/top-products", { headers: noCacheHeaders }),
-      api.get("/dash/sales/user", { headers: noCacheHeaders }),
-    ]);
+      // Si hay fechas, las incluimos en la query
+      const query =
+        startDate && endDate
+          ? `?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`
+          : "";
 
-    dispatch({
-      type: "DASHBOARD_SUCCESS",
-      payload: {
-        summary: summaryRes.data || {},
-        salesByDay: salesByDayRes.data || [],
-        salesByMonth: salesByMonthRes.data || [],
-        topProducts: topProductsRes.data || [],
-        salesByUser: salesByUserRes.data || [],
-      },
-    });
-  } catch (error) {
-    dispatch({
-      type: "DASHBOARD_FAILURE",
-      payload: error.response?.data?.error || error.message,
-    });
-  }
-};
+      const [salesByDayRes, salesByMonthRes, topProductsRes, salesByUserRes] =
+        await Promise.all([
+          api.get("/dash/sales/day", { headers: noCacheHeaders }),
+          api.get("/dash/sales/month", { headers: noCacheHeaders }),
+          api.get(`/dash/top-products${query}`, { headers: noCacheHeaders }),
+          api.get("/dash/sales/user", { headers: noCacheHeaders }),
+        ]);
 
-export const fetchProfitByRange = (startDate, endDate) => async (dispatch) => {
-  dispatch({ type: "PROFIT_REQUEST" });
-
-  try {
-    const { data } = await api.get("/dash/profit-r", {
-      params: { startDate, endDate },
-      headers: { "Cache-Control": "no-cache" },
-    });
-
-    dispatch({ type: "PROFIT_SUCCESS", payload: data });
-  } catch (error) {
-    dispatch({
-      type: "PROFIT_FAILURE",
-      payload: error.response?.data?.error || error.message,
-    });
-  }
-};
+      dispatch({
+        type: "DASHBOARD_SUCCESS",
+        payload: {
+          salesByDay: salesByDayRes.data || [],
+          salesByMonth: salesByMonthRes.data || [],
+          topProducts: topProductsRes.data || [],
+          salesByUser: salesByUserRes.data || [],
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: "DASHBOARD_FAILURE",
+        payload: error.response?.data?.error || error.message,
+      });
+    }
+  };

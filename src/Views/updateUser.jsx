@@ -14,6 +14,7 @@ const UpdateUser = () => {
     name: "",
     businessName: "",
     email: "",
+    phone : "",
     password: "",
   });
 
@@ -28,6 +29,7 @@ useEffect(() => {
       name: authUser.name || "",
       businessName: authUser.businessName || "",
       email: authUser.email || "",
+      phone: authUser.phone || "",
       password: "",
     });
 
@@ -62,7 +64,7 @@ const handleSubmit = async (e) => {
 
   const formData = new FormData();
 
-const fields = ["name", "businessName", "email"];
+const fields = ["name", "businessName", "phone", "email"];
 fields.forEach((field) => {
   if (user[field] !== authUser[field]) {
     formData.append(field, user[field]);
@@ -134,7 +136,14 @@ image
               onChange={handleChange}
               className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-gray-700  focus:ring-purple-500 focus:border-purple-500 shadow-sm"
             />
-
+             <input
+              type="text"
+              name="phone"
+              placeholder="Telefono celular"
+              value={user.phone}
+              onChange={handleChange}
+              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-gray-700  focus:ring-purple-500 focus:border-purple-500 shadow-sm"
+            />
             <input
               type="password"
               name="password"
@@ -148,7 +157,7 @@ image
             <div className="relative mt-4 flex flex-col items-center">
               {preview ? (
                 <div className="relative">
-                  <img
+                  <img 
                     src={preview}
                     alt="Imagen de usuario"
                     className="w-32 h-32 object-cover rounded-full border border-gray-300 shadow-md"
