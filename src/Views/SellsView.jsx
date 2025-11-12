@@ -65,7 +65,7 @@ const View_Sells = () => {
   };
 
   return (
-    <div className="w-full px-4 sm:px-6 lg:px-8 py-4 bg-white shadow rounded text-black">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-4 bg-black bg-opacity-75 shadow rounded text-white">
       {/* Botones de navegación */}
       <div className="grid grid-cols-2 mb-4">
         <div className="justify-self-start">
@@ -91,7 +91,7 @@ const View_Sells = () => {
         </div>
       </div>
 
-      <h2 className="text-2xl font-semibold mb-4 mt-12">Todas las Ventas</h2>
+      <h2 className="text-2xl  text-white font-semibold mb-4 mt-5">Todas las Ventas</h2>
 
       {/* Estado de carga o error */}
       {loading && <p>Cargando ventas...</p>}
@@ -103,7 +103,7 @@ const View_Sells = () => {
           {sells.map((sell) => (
             <li
               key={sell.id}
-              className="border p-4 rounded-md shadow-sm bg-purple-50 text-black"
+              className="border p-4 rounded-md shadow-sm bg-purple-50 text-white"
             >
               <p>
                 <span className="font-semibold">Fecha:</span>{" "}
@@ -143,7 +143,7 @@ const View_Sells = () => {
             </div>
 
             {/* Info del producto */}
-            <div className="p-3">
+            <div className="p-3 text-black">
               <p className="font-semibold text-purple-800">{prod.name}</p>
               <p className="text-sm text-gray-600 line-clamp-2">
                 {prod.description || "Sin descripción"}
@@ -151,11 +151,11 @@ const View_Sells = () => {
 
               <div className="mt-2 text-sm">
                 <p>
-                  <span className="font-medium">Cantidad:</span>{" "}
+                  <span className="font-medium text-black">Cantidad:</span>{" "}
                   {prod.SellProduct?.quantity ?? 0}
                 </p>
                 <p>
-                  <span className="font-medium">Precio:</span> $
+                  <span className="font-medium text-black ">Precio:</span > $
                   {prod.SellProduct?.price ?? 0}
                 </p>
               </div>

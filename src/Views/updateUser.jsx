@@ -90,11 +90,9 @@ image
   }
 };
 
-
-
   return (
     <div className="flex items-center justify-center h-full px-4">
-      <div className="h-screen bg-white top-10 relative">
+      <div className="h-screen bg-black bg-opacity-75 top-10 relative">
         <Link to="/" aria-label="Volver al inicio">
           <div className="absolute top-4 left-4 z-10">
             <button className="bg-purple-800 hover:bg-gray-500 text-white font-medium px-3 py-1 rounded-md text-sm transition duration-600">
@@ -103,9 +101,9 @@ image
           </div>
         </Link>
 
-        <div className="bg-white p-6 md:p-10 rounded-xl shadow-lg w-full max-w-md">
+        <div className="bg-black p-6 md:p-10 rounded-xl shadow-lg w-full max-w-md">
           <form onSubmit={handleSubmit} className="mt-10 space-y-4">
-            <h2 className="text-black text-2xl font-semibold">
+            <h2 className="text-white text-2xl font-semibold">
               Actualizar Usuario
             </h2>
 
@@ -116,7 +114,7 @@ image
               placeholder="Nombre"
               value={user.name}
               onChange={handleChange}
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-gray-700 focus:ring-purple-500 focus:border-purple-500 shadow-sm"
+              className="w-full bg-gray-900 border border-purple-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-white focus:ring-purple-500 focus:border-purple-500 shadow-sm"
             />
 
             <input
@@ -125,7 +123,7 @@ image
               placeholder="Nombre de Negocio"
               value={user.businessName}
               onChange={handleChange}
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-gray-700  focus:ring-purple-500 focus:border-purple-500 shadow-sm"
+              className="w-full bg-gray-900 border border-purple-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-white  focus:ring-purple-500 focus:border-purple-500 shadow-sm"
             />
 
             <input
@@ -134,7 +132,7 @@ image
               placeholder="Correo electrónico"
               value={user.email}
               onChange={handleChange}
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-gray-700  focus:ring-purple-500 focus:border-purple-500 shadow-sm"
+              className="w-full bg-gray-900 border border-purple-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-white  focus:ring-purple-500 focus:border-purple-500 shadow-sm"
             />
              <input
               type="text"
@@ -142,7 +140,7 @@ image
               placeholder="Telefono celular"
               value={user.phone}
               onChange={handleChange}
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-gray-700  focus:ring-purple-500 focus:border-purple-500 shadow-sm"
+              className="w-full bg-gray-900 border border-purple-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-white  focus:ring-purple-500 focus:border-purple-500 shadow-sm"
             />
             <input
               type="password"
@@ -150,7 +148,7 @@ image
               placeholder="Contraseña"
               value={user.password}
               onChange={handleChange}
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-gray-700 focus:ring-purple-500 focus:border-purple-500 shadow-sm"
+              className="w-full bg-gray-900 border border-purple-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-white focus:ring-purple-500 focus:border-purple-500 shadow-sm"
             />
 
             {/* Sección de imagen */}

@@ -29,25 +29,23 @@ const Login = () => {
     }
   }, [token, navigate]);
 
+
   return (
-    
-     <div className="min-h-screen flex flex-col">
 
-<img className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" src="/docs/images/people/profile-picture-5.jpg" alt="Bordered avatar"/>
-
+     <div className="min-h-screen  flex flex-col overflow-hidden">
     {/* Logo arriba */}
-    <div className="flex justify-center mt-6">
+    <div className="flex justify-center ">
       <img
         src={logo}
         alt="Logo"
         className="w-32 h-auto object-contain"
       />
     </div>
-      <div className="content max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+      <div className="content max-w-md mx-auto p-6 bg-black bg-opacity-75 rounded-lg shadow-md">
 
        
 
-        <h1 className="text-black text-2xl mb-6 text-center">Iniciar sesión</h1>
+        <h1 className="text-white text-2xl font-semibold mb-6 text-center">Iniciar sesión</h1>
 
         <div className="form-group space-y-4">
           {error && <p className="text-red-500">{error}</p>}
@@ -58,7 +56,7 @@ const Login = () => {
               placeholder="Email"
               value={useremail}
               onChange={(e) => setUserEmail(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-gray-700 focus:ring-purple-500 focus:border-purple-500 shadow-sm"
+              className="w-full bg-black border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-gray-400 focus:ring-purple-500 focus:border-purple-500 shadow-sm"
             />
 
             <input
@@ -66,7 +64,7 @@ const Login = () => {
               placeholder="Password"
               value={userpassword}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-gray-700 focus:ring-purple-500 focus:border-purple-500 shadow-sm"
+              className="w-full bg-black border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-gray-400 focus:ring-purple-500 focus:border-purple-500 shadow-sm"
             />
 
             <button
@@ -82,9 +80,9 @@ const Login = () => {
             <Link to="/create">
               <h2>Registrar</h2>
             </Link>
-            <div className="mt-6">
+            <div className="mt-6 py-4">
               <Link to="/allcatalogs">
-                <h2 className="text-red-500 font-semibold">
+                <h2 className="text-red-700 font-semibold">
                   Ver catálogos públicos
                 </h2>
               </Link>

@@ -126,7 +126,7 @@ const Create_Sell = () => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4 bg-white shadow rounded relative overflow-x-hidden sm:p-6">
+    <div className="w-full max-w-2xl mx-auto p-4 bg-black shadow rounded relative overflow-x-hidden sm:p-6">
       {message && (
         <div
           className={`mb-4 p-3 rounded-lg text-center font-medium ${
@@ -150,22 +150,22 @@ const Create_Sell = () => {
         </div>
       </Link>
 
-      <h2 className="text-2xl text-black font-semibold mb-6 mt-12 text-center sm:text-left">
+      <h2 className="text-2xl text-white font-semibold mb-6 mt-12 text-center sm:text-left">
         Crear nueva venta
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Categoría */}
         <div>
-          <label className="block text-gray-700 font-semibold mb-2">
+          <label className="block text-gray-600 font-semibold mb-2">
             Seleccionar categoría
           </label>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full sm:w-auto bg-gray-100 border text-black border-purple-500 rounded-md px-4 py-2"
+            className="w-full sm:w-auto bg-gray-900 border text-white border-purple-500 rounded-md px-4 py-2"
           >
-            <option value="">-- Selecciona una categoría --</option>
+            <option value="">- Selecciona una categoría -</option>
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
@@ -182,7 +182,7 @@ const Create_Sell = () => {
               setSelectedProduct(e.target.value);
               setSelectedVariant("");
             }}
-            className="flex-grow bg-gray-100 border border-purple-500 rounded-md px-4 py-2 text-gray-800"
+            className="flex-grow bg-gray-900 border border-purple-500 rounded-md px-4 py-2 text-gray-200"
           >
             <option value="">Selecciona un producto</option>
             {Array.isArray(products) &&
@@ -200,7 +200,7 @@ const Create_Sell = () => {
               <select
                 value={selectedVariant}
                 onChange={(e) => setSelectedVariant(e.target.value)}
-                className="flex-grow bg-gray-100 border border-purple-500 rounded-md px-4 py-2 text-gray-800"
+                className="flex-grow bg-gray-900 border border-purple-500 rounded-md px-4 py-2 text-gray-200"
               >
                 <option value="">Selecciona una variante</option>
                 {products
@@ -221,7 +221,7 @@ const Create_Sell = () => {
             min="1"
             value={quantity}
             onChange={(e) => setQuantity(Number(e.target.value))}
-            className="w-24 bg-white border border-gray-300 rounded-lg px-2 py-1 text-gray-800"
+            className="w-24 bg-black border border-purple-500 rounded-lg px-2 py-1 text-gray-200"
           />
 
           <button
@@ -235,24 +235,24 @@ const Create_Sell = () => {
 
         {/* Lista de productos seleccionados */}
         {sellProducts.length > 0 && (
-          <div className="bg-gray-100 p-4 rounded-lg shadow-sm overflow-x-auto">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          <div className="bg-gray-900 p-4 rounded-lg shadow-sm overflow-x-auto">
+            <h3 className="text-lg font-semibold text-gray-200 mb-2">
               Productos seleccionados
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2 ">
               {sellProducts.map((p) => (
                 <li
                   key={p.key}
-                  className="flex justify-between text-black items-center bg-white p-2 rounded shadow"
+                  className="flex justify-between text-purple-500 items-center bg-gray-800 p-2 rounded shadow"
                 >
                   <span>
                     {p.name}{" "}
                     {p.variantLabel && (
-                      <span className="text-sm text-gray-500">
+                      <span className="bg-black text-sm text-gray-500">
                         ({p.variantLabel})
                       </span>
                     )}{" "}
-                    --- Cantidad: {p.quantity}
+                     - Cantidad: {p.quantity}
                   </span>
                   <button
                     type="button"

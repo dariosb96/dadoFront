@@ -183,7 +183,7 @@ const handleSubmit = async (e) => {
 
 
   return (
-    <div className="w-full max-w-xl mx-auto p-4 bg-white shadow rounded relative overflow-x-hidden">
+    <div className="w-full max-w-xl mx-auto p-4 bg-black shadow rounded relative overflow-x-hidden">
       <Link to="/" aria-label="Volver al inicio">
         <div className="absolute top-4 left-4 z-10">
           <button
@@ -195,7 +195,7 @@ const handleSubmit = async (e) => {
         </div>
       </Link>
 
-      <h2 className="text-2xl text-black font-semibold mb-4 mt-12">Crear nuevo producto</h2>
+      <h2 className="text-2xl text-gray-400 font-semibold mb-4 mt-12">Crear nuevo producto</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
         {/* NOMBRE */}
@@ -205,7 +205,7 @@ const handleSubmit = async (e) => {
           placeholder="Nombre del producto"
           value={product.name}
           onChange={handleChange}
-          className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2"
+          className="w-full text-white bg-gray-900 border border-gray-300 rounded-lg px-4 py-2"
         />
 
         {/* CATEGORÍA */}
@@ -215,7 +215,7 @@ const handleSubmit = async (e) => {
               name="category"
               value={product.category}
               onChange={handleChange}
-              className="bg-gray-100 text-black border border-purple-500 rounded-md px-4 py-2 flex-grow"
+              className="text-white bg-gray-900 border border-purple-500 rounded-md px-4 py-2 flex-grow"
             >
               <option value="">Selecciona una categoría</option>
               {categories.map((cat) => (
@@ -227,7 +227,7 @@ const handleSubmit = async (e) => {
 
             <span
               onClick={() => setShowNewCategoryInput(true)}
-              className="text-purple-800 text-sm font-semibold cursor-pointer hover:underline transition duration-300 whitespace-nowrap"
+              className="text-purple-600 text-sm font-semibold cursor-pointer hover:underline transition duration-300 whitespace-nowrap"
             >
               Crear categoría
             </span>
@@ -240,7 +240,7 @@ const handleSubmit = async (e) => {
               placeholder="Nombre de nueva categoría"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2"
+              className="w-full text-white bg-gray-800 border border-gray-300 rounded-lg px-4 py-2"
             />
 
             {categories.length > 0 && (
@@ -264,7 +264,7 @@ const handleSubmit = async (e) => {
           placeholder="Descripción"
           value={product.description}
           onChange={handleChange}
-          className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2"
+          className="w-full text-white bg-gray-900 border border-gray-300 rounded-lg px-4 py-2"
         />
 
         {/* IMÁGENES PRINCIPALES */}
@@ -284,7 +284,7 @@ const handleSubmit = async (e) => {
             className="hidden"
             accept="image/*"
           />
-          <span className="text-gray-700 text-sm text-center">Agrega fotos del producto</span>
+          <span className="text-gray-500 text-sm text-center">Agrega fotos del producto</span>
 
           {imagePreviews.length > 0 && (
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-3 mb-2">
@@ -312,7 +312,7 @@ const handleSubmit = async (e) => {
           placeholder="Precio de venta"
           value={product.price}
           onChange={handleChange}
-          className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2"
+          className="w-full text-white bg-gray-900 border border-gray-300 rounded-lg px-4 py-2"
         />
 
         <input
@@ -321,7 +321,7 @@ const handleSubmit = async (e) => {
           placeholder="Precio de compra"
           value={product.buyPrice}
           onChange={handleChange}
-          className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2"
+          className="w-full text-white bg-gray-900 border border-gray-300 rounded-lg px-4 py-2"
         />
 
         <input
@@ -330,7 +330,7 @@ const handleSubmit = async (e) => {
           placeholder="Stock"
           value={product.stock}
           onChange={handleChange}
-          className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2"
+          className="w-full text-white bg-gray-900 border border-gray-300 rounded-lg px-4 py-2"
         />
 
         {/* VARIANTES */}
@@ -339,14 +339,16 @@ const handleSubmit = async (e) => {
 
           {product.variants.map((variant, idx) => (
             <div key={idx} className="border p-3 mb-3 rounded bg-gray-50 relative">
-              <button
-                type="button"
-                onClick={() => removeVariant(idx)}
-                className="absolute top-2 right-2 text-white bg-red-600 px-2 py-1 rounded hover:bg-red-700 text-xs"
-                title="Eliminar variante"
-              >
-                Eliminar
-              </button>
+             <div className="text-right ">
+  <button
+    type="button"
+    onClick={() => removeVariant(idx)}
+    className="mt-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs"
+    title="Eliminar variante"
+  >
+    Eliminar
+  </button>
+</div>
 
               <input
                 type="text"
@@ -429,7 +431,7 @@ const handleSubmit = async (e) => {
         </button>
       </form>
 
-      <label className="mt-4 flex items-center text-black">
+      <label className="mt-4 flex items-center text-gray-300">
         <input
           type="checkbox"
           checked={createAnother}

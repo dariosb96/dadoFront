@@ -15,7 +15,7 @@ const UserProfile = () => {
   });
 
   return (
-     <div className="w-full px-4 sm:px-6 lg:px-8 py-4 bg-white shadow rounded text-black">
+     <div className="w-full px-4 sm:px-6 lg:px-8 py-4 bg-black bg-opacity-75 shadow rounded text-black">
     <div className="flex justify-between items-center mb-4">
       <Link to="/" aria-label="Volver al inicio">
         <button
@@ -26,7 +26,7 @@ const UserProfile = () => {
         </button>
       </Link>
     </div>
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm text-left">
+      <div className="bg-black p-8 rounded-xl shadow-lg w-full max-w-sm text-left">
         {/* Imagen */}
         <div className="flex justify-center mb-6">
           <img
@@ -37,20 +37,23 @@ const UserProfile = () => {
         </div>
 
         {/* Datos */}
-        <p className="text-gray-700 mb-2">
-          <span className="font-semibold">Nombre:</span> {user.name}
+        <p className="text-gray-400 mb-2">
+          <span className="font-semibold text-white">Nombre:</span> {user.name}
         </p>
-        <p className="text-gray-700 mb-2">
-          <span className="font-semibold">Negocio:</span> {user.businessName}
+        <p className="text-gray-400 mb-2">
+          <span className="font-semibold text-white">Negocio:</span> {user.businessName}
         </p>
-        <p className="text-gray-700 mb-2">
-          <span className="font-semibold">Correo:</span> {user.email}
+        <p className="text-gray-400 mb-2">
+          <span className="font-semibold text-white">Correo:</span> {user.email}
         </p>
-        <p className="text-gray-700 mb-2">
-          <span className="font-semibold">Rol:</span> {user.role}
+        <p className="text-gray-400 mb-2">
+          <span className="font-semibold text-white">Telefono:</span> {user.phone}
         </p>
-        <p className="text-gray-700 mb-4">
-          <span className="font-semibold">Miembro desde:</span> {joinedDate}
+        <p className="text-gray-400 mb-2">
+          <span className="font-semibold text-white">Rol:</span> {user.role}
+        </p>
+        <p className="text-gray-400 mb-4">
+          <span className="font-semibold text-white">Miembro desde:</span> {joinedDate}
         </p>
 
         {/* Botón editar */}

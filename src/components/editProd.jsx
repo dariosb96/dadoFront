@@ -17,25 +17,20 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
     stock: "",
     buyPrice: "",
     description: "",
-    newImages: [], // File[] for main product
+    newImages: [],
   });
 
   const [previewImages, setPreviewImages] = useState([]); // URLs for new main images
   const [existingImages, setExistingImages] = useState([]); // main images from backend
   const [imagesToDelete, setImagesToDelete] = useState([]);
 
-  // Variants state: each variant is independent and uses uid
+
   const [variants, setVariants] = useState([]);
   const [removedVariantIds, setRemovedVariantIds] = useState([]);
+ const createdObjectUrlsRef = useRef(new Set());
 
-
-  // track created object URLs to revoke them later
-  const createdObjectUrlsRef = useRef(new Set());
-
-  // Track which productId we initialized for (so we don't re-init mid-edit)
   const initializedForProductRef = useRef(null);
 
-  // cleanup all created object URLs on unmount
   useEffect(() => {
     return () => {
       createdObjectUrlsRef.current.forEach((u) => {
@@ -47,7 +42,6 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
     };
   }, []);
 
-  // Initialize state when modal opens. Avoid re-initializing while editing.
   useEffect(() => {
     if (!isOpen) {
       initializedForProductRef.current = null;
@@ -56,12 +50,10 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
 
     const productId = product?.id ?? null;
     if (initializedForProductRef.current === productId) {
-      // already initialized for this product, keep user edits
       return;
     }
     initializedForProductRef.current = productId;
 
-    // initialize form
     setForm({
       name: product?.name ?? "",
       price: product?.price ?? "",
@@ -71,7 +63,7 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
       newImages: [],
     });
 
-    // revoke and clear any previous main previews
+
     previewImages.forEach((u) => {
       try {
         URL.revokeObjectURL(u);
@@ -100,7 +92,6 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, product?.id]);
 
-  // --- small helpers ---
   const updateFormField = (name, value) =>
     setForm((p) => ({ ...p, [name]: value }));
 
@@ -108,7 +99,7 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
     setVariants((prev) => prev.map((v) => (v.uid === uid ? updater(v) : v)));
   };
 
-  // --- main images handlers ---
+
   const handleMainImagesChange = (e) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
@@ -120,7 +111,6 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
     setForm((p) => ({ ...p, newImages: [...(p.newImages || []), ...files] }));
     setPreviewImages((p) => [...p, ...urls]);
 
-    // reset input value (optional) - input may be uncontrolled in DOM
     e.target.value = "";
   };
 
@@ -152,7 +142,7 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
     );
   };
 
-  // --- variants handlers (operate by uid) ---
+
   const addVariant = () => {
     const v = {
       uid: uidFallback(),
@@ -277,7 +267,6 @@ const handleSubmit = (e) => {
 
   data.append("variants", JSON.stringify(variantsPayload));
 
-  // enviar nuevas imágenes por variante
   variants.forEach(v => {
     if (v.newImages && v.newImages.length > 0) {
       v.newImages.forEach(f => data.append(`variantImages_${v.uid}`, f));
@@ -299,8 +288,8 @@ for (let [key, value] of data.entries()) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto p-4">
       <div className="flex items-center justify-center min-h-full">
-        <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] p-6 overflow-y-auto">
-          <h2 className="text-xl font-bold mb-4">Editar producto</h2>
+        <div className="bg-black  rounded-lg w-full max-w-4xl max-h-[90vh] p-6 overflow-y-auto">
+          <h2 className="text-xl font-bold mb-4 text-white">Editar producto</h2>
 
           <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
             {/* PRODUCT FIELDS */}
