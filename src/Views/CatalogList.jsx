@@ -18,7 +18,7 @@ export default function CatalogList() {
 
   if (loading) return <p className="text-purple-800 text-center mt-6">Cargando catálogos...</p>;
   if (error) return <p className="text-red-600 text-center mt-6">Error: {error}</p>;
-  if (!catalogs || catalogs.length === 0) return <p className="text-gray-600 text-center mt-6">No hay catálogos disponibles</p>;
+  if (!catalogs || catalogs.length === 0) return <p className="text-gray-400 text-3xl text-center mt-6">No hay catálogos disponibles</p>;
 
   return (
     <div className="min-h-screen text-black bg-white py-5 px-4">

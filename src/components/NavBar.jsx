@@ -1,136 +1,151 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { useRef } from "react";
-import { LogOut, Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
 import LogOutButton from "./logOut";
-import logo from '../assets/logo.png' ; 
+import logo from "../assets/logo.png";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [ventasOpen, setVentasOpen] = useState(false);
   const [productosOpen, setProductosOpen] = useState(false);
-  const productosRef = useRef(null);
-const ventasRef = useRef(null);
 
+  const productosRef = useRef(null); // desktop
+  const ventasRef = useRef(null); // desktop
+  const productosMobileRef = useRef(null); // mobile
+  const ventasMobileRef = useRef(null); // mobile
 
   const user = useSelector((state) => state.auth.user);
 
-
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = () => setIsOpen((s) => !s);
 
   useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (
-      productosRef.current &&
-      !productosRef.current.contains(event.target)
-    ) {
+    // Usamos 'click' para que el orden de ejecución no haga que se cierre antes del onClick del botón
+    const handleClickOutside = (event) => {
+      const target = event.target;
+
+      // si el click está dentro de cualquiera de estos contenedores, no cerrar
+      if (
+        (productosRef.current && productosRef.current.contains(target)) ||
+        (ventasRef.current && ventasRef.current.contains(target)) ||
+        (productosMobileRef.current && productosMobileRef.current.contains(target)) ||
+        (ventasMobileRef.current && ventasMobileRef.current.contains(target))
+      ) {
+        return;
+      }
+
+      // fuera de los dropdowns -> cerrar ambos dropdowns
       setProductosOpen(false);
-    }
-    if (
-      ventasRef.current &&
-      !ventasRef.current.contains(event.target)
-    ) {
       setVentasOpen(false);
-    }
-  };
+    };
 
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
-
+    document.addEventListener("click", handleClickOutside, true); // capture phase por si acaso
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, []);
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-purple-900 text-white z-50 shadow-md">
+    <nav className="fixed top-0 left-0 w-full bg-black text-white z-50 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6">
         <div className="flex justify-between h-12 items-center">
-          {/* Logo */}
-          <div className="text-2xl font-bold">
-            {user?.name || user?.email || "Inicio"}
-          </div>
-  <div className="flex-1 flex justify-center">
-            <img
-              src={logo}
-              alt="Logo"
-              className="h-8 w-auto object-contain"
-            />
-          </div>
-          {/* Menu desktop */}
-          <div className="hidden md:flex items-center h-full space-x-6">
-            <a href="/" className="text-white hover:text-purple-300">
-              Inicio
-            </a>
+          {/* Nombre o inicio */}
+          <div className="text-2xl font-bold">{user?.name || user?.email || "Inicio"}</div>
 
-            {/* Dropdown Productos */}
+          {/* Logo centrado */}
+          <div className="flex-1 flex justify-center">
+            <img src={logo} alt="Logo" className="h-8 w-auto object-contain" />
+          </div>
+
+          {/* Menu Desktop */}
+          <div className="hidden text-purple-700  md:flex items-center h-full space-x-6">
+            <Link to="/" className=" text-white hover:text-purple-600">
+              Inicio
+            </Link>
+
+            {/* Productos Desktop */}
             <div className="relative" ref={productosRef}>
               <button
-                onClick={() => setProductosOpen(!productosOpen)}
-                className="flex items-center space-x-1 text-white hover:text-purple-300 bg-purple-900"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setProductosOpen((s) => !s);
+                }}
+                className="flex text-white bg-black items-center space-x-1 hover:text-purple-600"
               >
                 <span>Productos</span>
                 <ChevronDown size={16} />
               </button>
 
               {productosOpen && (
-                <div className="absolute left-0 mt-2 w-44 bg-purple-900 rounded-md shadow-lg py-2 z-50">
-                  <a
-                    href="/products"
-                    className="block px-4 py-2 hover:bg-purple-700 text-white hover:text-gray-300"
+                <div className="absolute left-0 mt-2 w-44 bg-black  bg-opacity-50 rounded-md shadow-lg py-2 z-50">
+                  <Link
+                    to="/products"
+                    className="block  text-white px-4 py-2 hover:bg-gray-900 hover:text-purple-600"
+                    onClick={() => setProductosOpen(false)}
                   >
                     Ver Productos
-                  </a>
-                  <a
-                    href="/createProd"
-                    className="block px-4 py-2 hover:bg-purple-700 text-white hover:text-gray-300"
+                  </Link>
+                  <Link
+                    to="/createProd"
+                    className="block  text-white px-4 py-2 hover:bg-gray-900 hover:text-purple-600"
+                    onClick={() => setProductosOpen(false)}
                   >
                     Crear Producto
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
 
-            {/* Dropdown Ventas */}
+            {/* Ventas Desktop */}
             <div className="relative" ref={ventasRef}>
               <button
-                onClick={() => setVentasOpen(!ventasOpen)}
-                className="flex items-center space-x-1 text-white hover:text-purple-300 bg-purple-900"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setVentasOpen((s) => !s);
+                }}
+                className="flex text-white items-center space-x-1 hover:text-purple-600 bg-black"
               >
                 <span>Ventas</span>
                 <ChevronDown size={16} />
               </button>
 
               {ventasOpen && (
-                <div className="absolute left-0 mt-2 w-40 bg-purple-900 rounded-md shadow-lg py-2 z-50">
-                  <a
-                    href="/sells"
-                    className="block px-4 py-2 hover:bg-purple-700 text-white hover:text-gray-300"
+                <div className="absolute left-0 mt-2 w-40 bg-black bg-opacity-50  rounded-md shadow-lg py-2 z-50">
+                  <Link
+                    to="/sells"
+                    className="block  text-white px-4 py-2 hover:bg-gray-900 hover:text-purple-600"
+                    onClick={() => setVentasOpen(false)}
                   >
                     Ver Ventas
-                  </a>
-                  <a
-                    href="/createSell"
-                    className="block px-4 py-2 hover:bg-purple-700 text-white hover:text-gray-300"
+                  </Link>
+                  <Link
+                    to="/createSell"
+                    className="block  text-white px-4 py-2 hover:bg-gray-900 hover:text-purple-600"
+                    onClick={() => setVentasOpen(false)}
                   >
                     Crear Venta
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
-<a href="/profile" className="text-white hover:text-purple-300">
+
+            <Link to="/profile" className="block  text-white px-4 py-2  hover:text-purple-600">
               Perfil
-            </a>
-            <a href="/dash" className="text-white hover:text-purple-300">
+            </Link>
+            <Link to="/dash" className="block  text-white px-4 py-2  hover:text-purple-600">
               Dashboard
-            </a>
+            </Link>
             <LogOutButton />
           </div>
 
-          {/* Botón hamburguesa (solo móvil) */}
+          {/* Botón hamburguesa móvil */}
           <div className="md:hidden">
             <button
+              type="button"
               onClick={toggleMenu}
-              className="focus:outline-none bg-purple-800 p-1 rounded"
+              className="focus:outline-none bg-black p-1 rounded text-purple-600"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -138,94 +153,117 @@ const ventasRef = useRef(null);
         </div>
       </div>
 
-      {/* Menu móvil */}
+      {/* Menu Móvil */}
       {isOpen && (
-        <div className="md:hidden bg-purple-800 text-white">
-          <a
-            href="/"
-            className="block px-4 py-2 hover:bg-purple-600 text-white"
+        <div className="md:hidden bg-black bg-opacity-50 text-white">
+          <Link
+            to="/"
+            className="text-white block px-4 py-2 hover:bg-purple-600"
             onClick={() => setIsOpen(false)}
           >
             Inicio
-          </a>
+          </Link>
 
-          {/* Dropdown Productos en móvil */}
-          <div>
+          {/* Productos móvil */}
+          <div ref={productosMobileRef} onClick={(e) => e.stopPropagation()}>
             <button
-              onClick={() => setProductosOpen(!productosOpen)}
-              className="w-full text-left px-4 py-2 flex items-center justify-between hover:bg-purple-800 bg-purple-800 text-white"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setProductosOpen((s) => !s);
+              }}
+              className="w-full bg-black text-left px-4 py-2 flex items-center justify-between hover:bg-gray-900 hover:text-purple-600"
             >
               <span>Productos</span>
               <ChevronDown size={16} />
             </button>
+
             {productosOpen && (
-              <div className="bg-purple-700">
-                <a
-                  href="/products"
-                  className="block px-6 py-2 hover:bg-purple-600 text-white hover:text-gray-300"
-                  onClick={() => setIsOpen(false)}
+              <div className="bg-black  bg-opacity-50 z-40">
+                <Link
+                  to="/products"
+                  className="text-gray-500 block px-6 py-2 hover:bg-gray-900"
+                  onClick={() => {
+                    setIsOpen(false);
+                    setProductosOpen(false);
+                  }}
                 >
                   Ver Productos
-                </a>
-                <a
-                  href="/createProd"
-                  className="block px-6 py-2 hover:bg-purple-600 text-white hover:text-gray-300"
-                  onClick={() => setIsOpen(false)}
+                </Link>
+                <Link
+                  to="/createProd"
+                  className="text-gray-500 block px-6 py-2 bg-black bg-opacity-50 hover:bg-gray-900"
+                  onClick={() => {
+                    setIsOpen(false);
+                    setProductosOpen(false);
+                  }}
                 >
                   Crear Producto
-                </a>
+                </Link>
               </div>
             )}
           </div>
 
-          {/* Dropdown Ventas en móvil */}
-          <div>
+          {/* Ventas móvil */}
+          <div ref={ventasMobileRef} onClick={(e) => e.stopPropagation()}>
             <button
-              onClick={() => setVentasOpen(!ventasOpen)}
-              className="w-full text-left px-4 py-2 flex items-center justify-between hover:bg-purple-800 bg-purple-800 text-white"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setVentasOpen((s) => !s);
+              }}
+              className="w-full text-left px-4 py-2 flex items-center justify-between bg-black hover:bg-gray-00 hover:text-purple-600"
             >
               <span>Ventas</span>
               <ChevronDown size={16} />
             </button>
+
             {ventasOpen && (
-              <div className="bg-purple-700">
-                <a
-                  href="/sells"
-                  className="block px-6 py-2 hover:bg-purple-600 text-white hover:text-gray-300"
-                  onClick={() => setIsOpen(false)}
+              <div className="bg-black z-40">
+                <Link
+                  to="/sells"
+                  className="text-gray-500 block px-6 py-2 hover:bg-purple-600"
+                  onClick={() => {
+                    setIsOpen(false);
+                    setVentasOpen(false);
+                  }}
                 >
                   Ver Ventas
-                </a>
-                <a
-                  href="/createSell"
-                  className="block px-6 py-2 hover:bg-purple-600 text-white hover:text-gray-300"
-                  onClick={() => setIsOpen(false)}
+                </Link>
+                <Link
+                  to="/createSell"
+                  className="text-gray-500 block px-6 py-2 hover:bg-purple-600"
+                  onClick={() => {
+                    setIsOpen(false);
+                    setVentasOpen(false);
+                  }}
                 >
                   Crear Venta
-                </a>
+                </Link>
               </div>
             )}
           </div>
 
-          <a
-            href="/dash"
-            className="block px-4 py-2 hover:bg-purple-600 text-white"
+          <Link
+            to="/dash"
+            className="text-gray-400 block px-4 py-2 hover:bg-purple-600"
             onClick={() => setIsOpen(false)}
           >
             Dashboard
-          </a>
-           <a
-            href="/profile"
-            className="block px-4 py-2 hover:bg-purple-600 text-white"
+          </Link>
+          <Link
+            to="/profile"
+            className="text-gray-400 block px-4 py-2 hover:bg-purple-600"
             onClick={() => setIsOpen(false)}
           >
             Perfil
-          </a>
+          </Link>
 
-          <LogOutButton />
+          <div className="px-4 py-2">
+            <LogOutButton />
+          </div>
         </div>
       )}
     </nav>
   );
 }
-

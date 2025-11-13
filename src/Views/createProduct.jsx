@@ -17,6 +17,7 @@ const Create_Product = () => {
     name: "",
     category: "",
     description: "",
+    color: "",
     images: [],
     price: "",
     stock: "",
@@ -128,6 +129,7 @@ const handleSubmit = async (e) => {
     const formData = new FormData();
     formData.append("name", product.name);
     formData.append("description", product.description || "");
+    formData.append("color", product.color || "");
     formData.append("price", Number(product.price));
     formData.append("buyPrice", Number(product.buyPrice));
     formData.append("stock", Number(product.stock));
@@ -164,6 +166,7 @@ const handleSubmit = async (e) => {
         name: "",
         category: "",
         description: "",
+        color:"",
         images: [],
         price: "",
         stock: "",
@@ -205,7 +208,7 @@ const handleSubmit = async (e) => {
           placeholder="Nombre del producto"
           value={product.name}
           onChange={handleChange}
-          className="w-full text-white bg-gray-900 border border-gray-300 rounded-lg px-4 py-2"
+          className="w-full text-white bg-gray-900 border border-purple-600 rounded-lg px-4 py-2"
         />
 
         {/* CATEGORÍA */}
@@ -215,7 +218,7 @@ const handleSubmit = async (e) => {
               name="category"
               value={product.category}
               onChange={handleChange}
-              className="text-white bg-gray-900 border border-purple-500 rounded-md px-4 py-2 flex-grow"
+              className="text-white bg-gray-900 border border-purple-600 rounded-md px-4 py-2 flex-grow"
             >
               <option value="">Selecciona una categoría</option>
               {categories.map((cat) => (
@@ -240,7 +243,7 @@ const handleSubmit = async (e) => {
               placeholder="Nombre de nueva categoría"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
-              className="w-full text-white bg-gray-800 border border-gray-300 rounded-lg px-4 py-2"
+              className="w-full text-white bg-gray-900 border border-purple-600 rounded-lg px-4 py-2"
             />
 
             {categories.length > 0 && (
@@ -257,6 +260,14 @@ const handleSubmit = async (e) => {
             )}
           </div>
         )}
+        <input
+          type="text"
+          name="color"
+          placeholder="color"
+          value={product.color}
+          onChange={handleChange}
+          className="w-full text-white bg-gray-900 border border-purple-600 rounded-lg px-4 py-2"
+        />
 
         {/* DESCRIPCIÓN */}
         <textarea
@@ -264,7 +275,7 @@ const handleSubmit = async (e) => {
           placeholder="Descripción"
           value={product.description}
           onChange={handleChange}
-          className="w-full text-white bg-gray-900 border border-gray-300 rounded-lg px-4 py-2"
+          className="w-full text-white bg-gray-900 border border-purple-600 rounded-lg px-4 py-2"
         />
 
         {/* IMÁGENES PRINCIPALES */}
@@ -312,7 +323,7 @@ const handleSubmit = async (e) => {
           placeholder="Precio de venta"
           value={product.price}
           onChange={handleChange}
-          className="w-full text-white bg-gray-900 border border-gray-300 rounded-lg px-4 py-2"
+          className="w-full text-white bg-gray-900 border border-purple-600 rounded-lg px-4 py-2"
         />
 
         <input
@@ -321,7 +332,7 @@ const handleSubmit = async (e) => {
           placeholder="Precio de compra"
           value={product.buyPrice}
           onChange={handleChange}
-          className="w-full text-white bg-gray-900 border border-gray-300 rounded-lg px-4 py-2"
+          className="w-full text-white bg-gray-900 border border-purple-600 rounded-lg px-4 py-2"
         />
 
         <input
@@ -330,7 +341,7 @@ const handleSubmit = async (e) => {
           placeholder="Stock"
           value={product.stock}
           onChange={handleChange}
-          className="w-full text-white bg-gray-900 border border-gray-300 rounded-lg px-4 py-2"
+          className="w-full text-white bg-gray-900 border border-purple-600 rounded-lg px-4 py-2"
         />
 
         {/* VARIANTES */}
@@ -425,7 +436,7 @@ const handleSubmit = async (e) => {
 
         <button
           type="submit"
-          className="w-full bg-purple-800 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-600 transition mt-4"
+          className="w-full bg-purple-800 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-600 border-white transition mt-4"
         >
           Crear producto
         </button>

@@ -66,13 +66,13 @@ const Create_user = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col ">
       {/* Logo arriba */}
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center ">
         <img src={logo} alt="Logo" className="w-32 h-auto object-contain" />
       </div>
 
-      <div className="content max-w-md mx-auto p-6 bg-white rounded-lg shadow-md mt-4 relative">
+      <div className="content max-w-md mx-auto p-6 bg-black bg-opacity-50 rounded-lg shadow-md mt-4 relative">
         {/* Botón volver */}
         <Link to="/" aria-label="Volver al inicio">
           <div className="absolute top-4 left-4 z-10">
@@ -87,7 +87,7 @@ const Create_user = () => {
 
         {/* Formulario */}
         <form onSubmit={handleSubmit} className="mt-10 space-y-4">
-          <h2 className="text-black text-2xl font-semibold text-center">
+          <h2 className="text-white text-2xl font-semibold text-center">
             Crear Usuario
           </h2>
 
@@ -97,7 +97,7 @@ const Create_user = () => {
             placeholder="Nombre"
             value={user.name}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-700"
+            className="w-full bg-gray-900 border border-purple-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-400 "
           />
           <input
             type="text"
@@ -105,7 +105,7 @@ const Create_user = () => {
             placeholder="Nombre de negocio"
             value={user.businessName}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-700"
+            className="w-full bg-gray-900 border border-purple-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-400"
           />
           <input
             type="email"
@@ -113,7 +113,7 @@ const Create_user = () => {
             placeholder="Correo electrónico"
             value={user.email}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-700"
+            className="w-full bg-gray-900 border border-purple-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-400"
           />
           <input
             type="text"
@@ -121,7 +121,7 @@ const Create_user = () => {
             placeholder="Celular"
             value={user.phone}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-700"
+            className="w-full bg-gray-900 border border-purple-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-400"
           />
           <input
             type="password"
@@ -129,12 +129,12 @@ const Create_user = () => {
             placeholder="Contraseña"
             value={user.password}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-700"
+            className="w-full bg-gray-900 border border-purple-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-400"
           />
 
           {/* Subir imagen */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
+            <label className="block text-gray-600 font-medium mb-2">
               Imagen de perfil (opcional)
             </label>
             <input
@@ -142,7 +142,7 @@ const Create_user = () => {
               name="image"
               accept="image/*"
               onChange={handleImageChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              className="w-full border border-purple-600 rounded-lg p-2"
             />
 
             {/* Vista previa */}

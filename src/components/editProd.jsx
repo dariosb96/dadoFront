@@ -15,6 +15,7 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
     name: "",
     price: "",
     stock: "",
+    color: "",
     buyPrice: "",
     description: "",
     newImages: [],
@@ -58,6 +59,7 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
       name: product?.name ?? "",
       price: product?.price ?? "",
       stock: product?.stock ?? "",
+      color: product?.color?? "",
       buyPrice: product?.buyPrice ?? "",
       description: product?.description ?? "",
       newImages: [],
@@ -247,6 +249,7 @@ const handleSubmit = (e) => {
   data.append("name", form.name);
   data.append("price", form.price);
   data.append("stock", String(form.stock ?? ""));
+  data.append("color", String(form.color ?? ""));
   data.append("buyPrice", form.buyPrice ?? "");
   data.append("description", form.description ?? "");
   (form.newImages || []).forEach(f => data.append("images", f));
@@ -295,6 +298,7 @@ for (let [key, value] of data.entries()) {
             {/* PRODUCT FIELDS */}
             <div className="grid grid-cols-1 gap-3">
               <input type="text" name="name" value={form.name} onChange={(e) => updateFormField("name", e.target.value)} placeholder="Nombre" className="w-full p-2 border rounded" />
+              <input type="text" name="color" value={form.color} onChange={(e) => updateFormField("color", e.target.value)} placeholder="color" className="w-full p-2 border rounded" />
               <div className="flex gap-2">
                 <input type="number" name="price" value={form.price} onChange={(e) => updateFormField("price", e.target.value)} placeholder="Precio" className="w-1/3 p-2 border rounded" />
                 <input type="number" name="buyPrice" value={form.buyPrice} onChange={(e) => updateFormField("buyPrice", e.target.value)} placeholder="Precio de compra" className="w-1/3 p-2 border rounded" />

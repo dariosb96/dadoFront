@@ -72,8 +72,9 @@ const ImageCarousel = ({ images = [], fixedHeight = 200 }) => {
       {imgs.length > 1 && (
         <div className="flex justify-center items-center gap-3 mt-2">
           <button
+          type="button"
             onClick={prevImage}
-            className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-700"
+            className="bg-purple-800 hover:bg-purple-600 text-white p-2 rounded-full transition"
           >
             <ChevronLeft size={16} />
           </button>
@@ -82,7 +83,7 @@ const ImageCarousel = ({ images = [], fixedHeight = 200 }) => {
           </span>
           <button
             onClick={nextImage}
-            className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-700"
+        className="bg-purple-800 hover:bg-purple-600 text-white p-2 rounded-full transition"
           >
             <ChevronRight size={16} />
           </button>
@@ -114,15 +115,15 @@ const CatalogProductCard = ({ product }) => {
   const active = showVariant ? selectedVariant : product;
 
   return (
-    <div className="border p-4 rounded-xl shadow bg-white hover:shadow-lg transition-all font-medium text-black flex flex-col gap-3 min-w-0">
-      <h2 className="text-lg font-bold text-purple-800 break-words">
+    <div className="border p-4 rounded-xl shadow bg-gray-900 hover:shadow-lg transition-all font-medium text-black flex flex-col gap-3 min-w-0">
+      <h2 className="text-lg font-bold text-purple-400 break-words">
         {active?.name || product.name}
       </h2>
-      <p className="text-sm text-gray-700">
+      <p className="text-sm text-gray-200">
         Categoría: {product.Category?.name || "Sin categoría"}
       </p>
-      <p className="text-purple-700 font-bold">Precio: ${active?.price ?? product.price}</p>
-      <p className="text-sm text-gray-600">Piezas disponibles: {active?.stock ?? product.stock}</p>
+      <p className="text-gray-200 font-semibold">Precio: ${active?.price ?? product.price}</p>
+      <p className="text-sm text-gray-500">Piezas disponibles: {active?.stock ?? product.stock}</p>
 
       <ImageCarousel images={active?._images ?? productImages} fixedHeight={180} />
 
@@ -186,15 +187,15 @@ const CatalogPage = () => {
 
   return (
     <div className="min-h-screen text-black ">
-      <div className="w-full flex justify-center items-center">
+      <div className="w-full bg-white bg-opacity-50 rounded-full flex justify-center items-center">
         <img src={logo} alt="Logo" className="w-10 h-auto object-contain p-1" />
       </div>
 
-      <h1 className="text-purple-700 text-3xl font-bold italic text-center mt-2 mb-4 drop-shadow-md">
+      <h1 className="text-white text-3xl font-bold italic text-center mt-2 mb-4 drop-shadow-md">
         {businessName || "Catálogo"}
       </h1>
 
-      <div className="bg-white max-w-7xl mx-auto px-4 py-6 rounded-xl shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 py-6 rounded-xl shadow-lg">
         {catalog?.length ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 items-stretch">
             {catalog.map((product) => (
