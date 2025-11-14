@@ -30,7 +30,7 @@ useEffect(() => {
     : baseUrl;
 
   return (
-    <div className="bg-gray-50 p-6">
+    <div className="bg-black bg-opacity-50 p-6 ">
       {/* Botón cerrar */}
       {onClose && (
         <div className="flex justify-end mb-4">
@@ -44,14 +44,14 @@ useEffect(() => {
       )}
 
       <div className="flex flex-col items-center">
-        <h1 className="text-2xl font-bold mb-4 text-black">
+        <h1 className="text-2xl font-semibold mb-4 text-white">
           Tu catálogo público
         </h1>
 
         {/* Selector de categorías */}
-        <label className="mb-2 text-black">Elige qué compartir:</label>
+        <label className="mb-2 text-white ">Elige qué compartir:</label>
         <select
-          className="border p-2 rounded mb-4"
+          className="border p-2 rounded mb-4 border-purple-600"
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
@@ -64,7 +64,7 @@ useEffect(() => {
         </select>
 
         {/* Link dinámico */}
-        <p className="mb-2 text-black">Copia y comparte este enlace:</p>
+        <p className="mb-2 text-gray-600 ">Copia y comparte este enlace:</p>
         <a
           href={catalogUrl}
           target="_blank"
@@ -76,7 +76,7 @@ useEffect(() => {
 
         <button
           onClick={() => navigator.clipboard.writeText(catalogUrl)}
-          className="bg-purple-800 text-white px-4 py-2 rounded hover:bg-purple-700 transition mb-6"
+          className="bg-purple-800 text-white px-4 py-2 full-rounded hover:bg-purple-700 transition mb-6"
         >
           Copiar enlace
         </button>

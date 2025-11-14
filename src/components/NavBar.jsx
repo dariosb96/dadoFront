@@ -20,11 +20,10 @@ export default function Navbar() {
   const toggleMenu = () => setIsOpen((s) => !s);
 
   useEffect(() => {
-    // Usamos 'click' para que el orden de ejecución no haga que se cierre antes del onClick del botón
+
     const handleClickOutside = (event) => {
       const target = event.target;
 
-      // si el click está dentro de cualquiera de estos contenedores, no cerrar
       if (
         (productosRef.current && productosRef.current.contains(target)) ||
         (ventasRef.current && ventasRef.current.contains(target)) ||
@@ -34,7 +33,6 @@ export default function Navbar() {
         return;
       }
 
-      // fuera de los dropdowns -> cerrar ambos dropdowns
       setProductosOpen(false);
       setVentasOpen(false);
     };
@@ -58,7 +56,7 @@ export default function Navbar() {
           </div>
 
           {/* Menu Desktop */}
-          <div className="hidden text-purple-700  md:flex items-center h-full space-x-6">
+          <div className="hidden text-purple-700  md:flex items-center h-full space-x-1">
             <Link to="/" className=" text-white hover:text-purple-600">
               Inicio
             </Link>
@@ -78,17 +76,17 @@ export default function Navbar() {
               </button>
 
               {productosOpen && (
-                <div className="absolute left-0 mt-2 w-44 bg-black  bg-opacity-50 rounded-md shadow-lg py-2 z-50">
+                <div className="absolute left-0 mt-2 w-44 bg-black  bg-opacity-50 rounded-md shadow-lg py-1 z-50">
                   <Link
                     to="/products"
-                    className="block  text-white px-4 py-2 hover:bg-gray-900 hover:text-purple-600"
+                    className="block  text-white px-4 py-1 hover:bg-gray-900 hover:text-purple-600"
                     onClick={() => setProductosOpen(false)}
                   >
                     Ver Productos
                   </Link>
                   <Link
                     to="/createProd"
-                    className="block  text-white px-4 py-2 hover:bg-gray-900 hover:text-purple-600"
+                    className="block  text-white px-4 py-1 hover:bg-gray-900 hover:text-purple-600"
                     onClick={() => setProductosOpen(false)}
                   >
                     Crear Producto
@@ -112,17 +110,17 @@ export default function Navbar() {
               </button>
 
               {ventasOpen && (
-                <div className="absolute left-0 mt-2 w-40 bg-black bg-opacity-50  rounded-md shadow-lg py-2 z-50">
+                <div className="absolute left-0 mt-2 w-40 bg-black bg-opacity-50  rounded-md shadow-lg py-1 z-50">
                   <Link
                     to="/sells"
-                    className="block  text-white px-4 py-2 hover:bg-gray-900 hover:text-purple-600"
+                    className="block  text-white px-2 py-1 hover:bg-gray-900 hover:text-purple-600"
                     onClick={() => setVentasOpen(false)}
                   >
                     Ver Ventas
                   </Link>
                   <Link
                     to="/createSell"
-                    className="block  text-white px-4 py-2 hover:bg-gray-900 hover:text-purple-600"
+                    className="block  text-white px-2 py-1 hover:bg-gray-900 hover:text-purple-600"
                     onClick={() => setVentasOpen(false)}
                   >
                     Crear Venta
@@ -131,10 +129,10 @@ export default function Navbar() {
               )}
             </div>
 
-            <Link to="/profile" className="block  text-white px-4 py-2  hover:text-purple-600">
+            <Link to="/profile" className="block  text-white px-2 py-1  hover:text-purple-600">
               Perfil
             </Link>
-            <Link to="/dash" className="block  text-white px-4 py-2  hover:text-purple-600">
+            <Link to="/dash" className="block  text-white px-2 py-1  hover:text-purple-600">
               Dashboard
             </Link>
             <LogOutButton />
@@ -158,7 +156,7 @@ export default function Navbar() {
         <div className="md:hidden bg-black bg-opacity-50 text-white">
           <Link
             to="/"
-            className="text-white block px-4 py-2 hover:bg-purple-600"
+            className="text-white block px-2 py-1 hover:bg-purple-600"
             onClick={() => setIsOpen(false)}
           >
             Inicio
@@ -172,7 +170,7 @@ export default function Navbar() {
                 e.stopPropagation();
                 setProductosOpen((s) => !s);
               }}
-              className="w-full bg-black text-left px-4 py-2 flex items-center justify-between hover:bg-gray-900 hover:text-purple-600"
+              className="w-full bg-black text-left px-2 py-1 flex items-center justify-between hover:bg-gray-900 hover:text-purple-600"
             >
               <span>Productos</span>
               <ChevronDown size={16} />

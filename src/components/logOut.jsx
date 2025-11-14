@@ -17,7 +17,7 @@ const LogOutButton = () => {
   className="bg-transparent border-none p-0 m-0 cursor-pointer text-white hover:text-purple-300"
   title="Cerrar sesión"
 >
-  <LogOut className="w-5 h-5" />
+  <LogOut className="w-5 h-5 text-white hover:text-red-600" />
 </button>
 
 

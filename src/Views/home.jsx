@@ -13,7 +13,7 @@ const Home = () => {
 
   return (
     
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <Navbar/>
          
      <h1 className="text-gray-400 p-8">{user.businessName} </h1>
@@ -56,10 +56,10 @@ const Home = () => {
 
       {/* Overlay del catálogo sin scroll */}
       {catalogOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl">
+        <div className="fixed inset-0 z-50  flex items-center justify-center p-4 ">
+          <div className="bg-black bg-opacity-75 rounded-md shadow-lg w-full max-w-xl border border-gray-600">
             {/* Encabezado con botón de cerrar */}
-            <div className="flex justify-end p-4 border-b">
+            <div className="flex justify-end p-4 bg-black bg-opacity-75">
               <button
                 onClick={() => setCatalogOpen(false)}
                 className="text-white bg-red-700 hover:bg-red-500 px-3 py-1 rounded-md text-sm font-bold"
@@ -69,7 +69,7 @@ const Home = () => {
             </div>
 
             {/* Contenido fijo sin scroll */}
-            <div className="p-6">
+            <div className="p-2 bg-black bg-opacity-75">
               <MyCatalogLink />
             </div>
           </div>

@@ -1,4 +1,3 @@
-
 import { api } from "../../api";
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
@@ -6,12 +5,11 @@ export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 export const LOGOUT = 'LOGOUT';
 
-
 export const LoginUser = (credentials) => async (dispatch) => {
     try {
         dispatch({ type: LOGIN_REQUEST });
 
-        const { data } = await api.post(`/user/login`, credentials, );
+        const { data } = await api.post(`/user/login`, credentials);
 
         if (data.userdata && data.userdata.id) {
             localStorage.setItem('token', data.token);
@@ -26,9 +24,18 @@ export const LoginUser = (credentials) => async (dispatch) => {
         }
 
     } catch (error) {
+        const errorMessage = error.response?.data?.message || error.message;
+
+        if (
+            errorMessage === "El token ha expirado" ||
+            errorMessage === "Token inválido"
+        ) {
+            dispatch(logout());
+        }
+
         dispatch({
             type: LOGIN_FAILURE,
-            payload: error.response?.data.message || error.message,
+            payload: errorMessage,
         });
     }
 };
