@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCatalogs } from "../Redux/actions/Products/allcatalogs_actions";
 import { selectCatalogsWithCategories } from "../Redux/actions/Products/catalogSelector";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 
 
 export default function CatalogList() {
@@ -21,9 +22,11 @@ export default function CatalogList() {
   if (!catalogs || catalogs.length === 0) return <p className="text-gray-400 text-3xl text-center mt-6">No hay catálogos disponibles</p>;
 
   return (
-    <div className="min-h-screen text-black bg-white py-5 px-4">
-      <h1> Catálogos públicos</h1>
-      <div className="max-w-6xl mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-3 py-5">
+      
+    <div className=" text-black bg-black bg-opacity-50 py-5 px-4 text-white">
+     
+      <span className="text-3xl font-semibold "> Catálogos públicos</span>
+      <div className="max-w-6xl mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-3 py-3 pt-8">
         {catalogs.map((c) => (
           <div
             key={c.id}
@@ -50,5 +53,6 @@ export default function CatalogList() {
         ))}
       </div>
     </div>
+
   );
 }

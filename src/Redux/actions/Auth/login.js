@@ -1,3 +1,10 @@
+import { api } from "../../api";
+
+export const LOGIN_REQUEST = 'LOGIN_REQUEST';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_FAILURE = 'LOGIN_FAILURE';
+export const LOGOUT = 'LOGOUT';
+
 export const LoginUser = (credentials) => async (dispatch) => {
     try {
         dispatch({ type: LOGIN_REQUEST });
@@ -17,13 +24,11 @@ export const LoginUser = (credentials) => async (dispatch) => {
         }
 
     } catch (error) {
-        // 👇 Aquí capturamos el mensaje real del backend
         const errorMessage =
-            error.response?.data?.message || // mensaje enviado por tu backend
-            error.response?.statusText ||    // texto del status (ej. Unauthorized)
-            error.message;                   // fallback genérico
+            error.response?.data?.message ||
+            error.response?.statusText ||
+            error.message;
 
-        // 🔑 Si el token es inválido o expiró, hacemos logout automático
         if (
             errorMessage === "El token ha expirado" ||
             errorMessage === "Token inválido"
@@ -36,4 +41,10 @@ export const LoginUser = (credentials) => async (dispatch) => {
             payload: errorMessage,
         });
     }
+};
+
+export const logout = () => (dispatch) => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    dispatch({ type: LOGOUT });
 };

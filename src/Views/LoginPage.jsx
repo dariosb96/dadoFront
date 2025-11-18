@@ -45,7 +45,7 @@ const Login = () => {
 
        
 
-        <h1 className="text-white text-2xl font-semibold mb-6 text-center">Iniciar sesión</h1>
+        <h1 className="text-white text-2xl font-semibold mb-6 py-4 text-center">Iniciar sesión</h1>
 
         <div className="form-group space-y-4">
           {error && <p className="text-red-500">{error}</p>}
@@ -78,12 +78,12 @@ const Login = () => {
 
           <div className="mt-5 text-center">
             <Link to="/create">
-              <h2>Registrar</h2>
+              <h2 className="pb-16">Registrar</h2>
             </Link>
-            <div className="mt-6 py-4">
+            <div className="mt-1 py-1">
               <Link to="/allcatalogs">
-                <h2 className="text-red-700 font-semibold">
-                  Ver catálogos públicos
+                <h2 className="text-gray-500  font-semibold">
+                  ➜ Ver catálogos públicos ‼️
                 </h2>
               </Link>
             </div>
