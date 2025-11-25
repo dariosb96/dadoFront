@@ -128,13 +128,7 @@ const CatalogProductCard = ({ product, openModal }) => {
       <h2 className="text-lg font-bold text-purple-400 break-words">
         {active?.name}
       </h2>
-
-      <p className="text-sm text-gray-200">
-        Categoría: {product?.Category?.name || "Sin categoría"}
-      </p>
-
-      <p className="text-gray-200 font-semibold">Precio: ${active?.price}</p>
-
+      <p className="text-gray-200 font-semibold">${active?.price}</p>
       <p className="text-sm text-gray-500">
         Piezas disponibles: {active?.stock}
       </p>
@@ -176,9 +170,6 @@ const CatalogProductCard = ({ product, openModal }) => {
   );
 };
 
-// =============================================================
-// 📄 Página completa del catálogo
-// =============================================================
 const CatalogPage = () => {
   const dispatch = useDispatch();
   const { userId } = useParams();
