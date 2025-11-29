@@ -5,9 +5,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import logo from "../assets/logo-black.png";
 
-// =============================================================
-// 🔧 Normalizar imágenes
-// =============================================================
+// Normalizar imágenes
 const normalizeImages = (images) => {
   if (!images) return [];
   if (!Array.isArray(images)) return [];
@@ -23,9 +21,7 @@ const normalizeImages = (images) => {
     .filter((i) => i && !!i.url);
 };
 
-// =============================================================
-// 🖼️ Componente de carrusel
-// =============================================================
+// Carrusel de imágenes
 const ImageCarousel = ({ images = [], fixedHeight = 200, onImageClick }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const imgs = normalizeImages(images);
@@ -98,9 +94,7 @@ const ImageCarousel = ({ images = [], fixedHeight = 200, onImageClick }) => {
   );
 };
 
-// =============================================================
-// 🛒 Tarjeta de producto
-// =============================================================
+// Tarjeta de producto
 const CatalogProductCard = ({ product, openModal }) => {
   const [showVariant, setShowVariant] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
@@ -174,9 +168,14 @@ const CatalogPage = () => {
   const dispatch = useDispatch();
   const { userId } = useParams();
   const [searchParams] = useSearchParams();
-  const category = searchParams.get("category");
 
-  const { catalog, loading, error, businessName } = useSelector((state) => state.catalog);
+  const category = searchParams.get("category");
+  const showBusiness = searchParams.get("showBusiness") === "1";
+  const showPhone = searchParams.get("showPhone") === "1";
+
+  const { catalog, loading, error, businessName, phone } = useSelector(
+    (state) => state.catalog
+  );
 
   const [modalImage, setModalImage] = useState(null);
 
@@ -184,7 +183,6 @@ const CatalogPage = () => {
     if (userId) dispatch(fetchCatalogByUser(userId, category));
   }, [dispatch, userId, category]);
 
-  // Cerrar con ESC
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") setModalImage(null);
@@ -193,18 +191,32 @@ const CatalogPage = () => {
     return () => window.removeEventListener("keydown", handleEsc);
   }, []);
 
-  if (loading) return <p className="p-4 text-center text-gray-600">Cargando catálogo...</p>;
-  if (error) return <p className="p-4 text-center text-red-500">Error: {error}</p>;
+  if (loading)
+    return <p className="p-4 text-center text-gray-600">Cargando catálogo...</p>;
+  if (error)
+    return <p className="p-4 text-center text-red-500">Error: {error}</p>;
 
   return (
-    <div className="min-h-screen text-black ">
+    <div className="min-h-screen text-black">
+      
+      {/* Logo */}
       <div className="w-full bg-white bg-opacity-50 rounded-full flex justify-center items-center">
         <img src={logo} alt="Logo" className="w-10 h-auto object-contain p-1" />
       </div>
 
-      <h1 className="text-white text-3xl font-bold italic text-center mt-2 mb-4 drop-shadow-md">
-        {businessName || "Catálogo"}
-      </h1>
+      {/* Mostrar nombre de negocio */}
+      {showBusiness && (
+        <h1 className="text-white text-3xl font-bold italic text-center mt-2 mb-2 drop-shadow-md">
+          {businessName || "Catálogo"}
+        </h1>
+      )}
+
+      {/* Mostrar número de teléfono */}
+      {showPhone && phone && (
+        <p className="text-center text-gray-300 text-lg mb-4">
+          📞 {phone}
+        </p>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 py-6 rounded-xl shadow-lg">
         {catalog?.length ? (
@@ -222,7 +234,7 @@ const CatalogPage = () => {
         )}
       </div>
 
-
+      {/* Modal de imagen */}
       {modalImage && (
         <div
           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"

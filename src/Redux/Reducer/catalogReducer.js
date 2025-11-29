@@ -3,7 +3,8 @@ const initialState = {
     catalogs: [],
     loading: false,
     error: null,
-    businessName: null
+    businessName: null,
+    phone: null
 };
 
 export const catalogReducer = (state = initialState, action) =>{
@@ -11,8 +12,14 @@ export const catalogReducer = (state = initialState, action) =>{
         case 'CATALOG_REQUEST':
          return {...state, loading: true};
 
-        case 'CATALOG_SUCCESS':
-         return {...state, loading: false, catalog: action.payload.products, businessName: action.payload.businessName};
+     case 'CATALOG_SUCCESS':
+  return { 
+    ...state, 
+    loading: false, 
+    catalog: action.payload.products, 
+    businessName: action.payload.businessName,
+    phone: action.payload.phone
+  };
 
         case 'CATALOG_FAILURE':
          return {...state, loading:false, error: action.payload};

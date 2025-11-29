@@ -5,12 +5,10 @@ import { fetchDashboardData } from "../Redux/actions/Dash/getDash";
 import {
   LineChart,
   Line,
-  BarChart,
-  Bar,
+  CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
-  CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
 import { format, parseISO } from "date-fns";
@@ -18,7 +16,7 @@ import { es } from "date-fns/locale";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const { loading, salesByDay, salesByMonth, topProducts, salesByUser, error } =
+  const { loading, salesByDay, topProducts, salesByUser, error } =
     useSelector((state) => state.dashboard);
 
   const [startDate, setStartDate] = useState("");
@@ -38,15 +36,10 @@ const Dashboard = () => {
     totalSales: Number(d.totalSales) || 0,
   }));
 
-  const formattedSalesByMonth = (salesByMonth || []).map((d) => ({
-    month: d.month || "N/D",
-    totalSales: Number(d.totalSales) || 0,
-  }));
-
   const formattedTopProducts = (topProducts || []).map((p) => ({
     name: p.product?.name || "Sin nombre",
     totalSold: Number(p.totalSold) || 0,
-    image: p.product?.images?.[0]?.url || null, 
+    image: p.product?.images?.[0]?.url || null,
   }));
 
   const formattedSalesByUser = (salesByUser || []).map((u) => ({
@@ -58,31 +51,36 @@ const Dashboard = () => {
   if (error) return <p className="text-center text-red-500 mt-8">{error}</p>;
 
   return (
+    <div className="p-4 sm:p-6 space-y-10 bg-black bg-opacity-75 min-h-screen">
+      {/* Botón Inicio */}
+      <Link to="/">
+        <button className="bg-purple-800 hover:bg-gray-500 text-white font-medium px-3 py-1 rounded-md text-sm transition duration-600">
+          ← Inicio
+        </button>
+      </Link>
 
-      
-    <div className="p-6 space-y-10 bg-black bg-opacity-75 ">
-      <Link to ="/">
-      <button className="bg-purple-800 text-white"> Inicio
-        </button></Link> 
-      <h1 className="text-3xl  text-white font-bold mb-4">Dashboard de Ventas</h1>
+      {/* Título */}
+      <h1 className="text-2xl sm:text-3xl text-white font-bold mb-4 text-center">
+        Dashboard de Ventas
+      </h1>
 
       {/* === FILTRO DE FECHAS === */}
-      <div className="flex gap-4 items-center">
-        <div>
+      <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+        <div className="flex-1">
           <label className="block text-white text-sm font-medium">Desde:</label>
           <input
             type="date"
-            className="border rounded-lg px-2 py-1"
+            className="w-full border rounded-lg px-2 py-1"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
           />
         </div>
 
-        <div>
+        <div className="flex-1">
           <label className="block text-white text-sm font-medium">Hasta:</label>
           <input
             type="date"
-            className="border rounded-lg px-2 py-1"
+            className="w-full border rounded-lg px-2 py-1"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
           />
@@ -90,7 +88,7 @@ const Dashboard = () => {
 
         <button
           onClick={handleFilter}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full sm:w-auto"
         >
           Filtrar
         </button>
@@ -98,47 +96,64 @@ const Dashboard = () => {
 
       {/* === GRÁFICO: Ventas por Día === */}
       <section>
-        <h2 className="text-xl text-white font-semibold mb-2">Ventas por Día</h2>
-        <ResponsiveContainer width="100%" height={300} className="bg-white">
-          <LineChart data={formattedSalesByDay}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Line type="monotone" dataKey="totalSales" stroke="#8884d8" strokeWidth={2} />
-          </LineChart>
-        </ResponsiveContainer>
+        <h2 className="text-lg sm:text-xl text-white font-semibold mb-2 text-center sm:text-left">
+          Ventas por Día
+        </h2>
+        {/* Scroll horizontal en móvil */}
+        <div className="overflow-x-auto">
+          <div className="min-w-[500px] h-64 sm:h-80 bg-white rounded-lg">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={formattedSalesByDay}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="totalSales"
+                  stroke="#8884d8"
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </section>
 
       {/* === GRÁFICO: Productos más vendidos === */}
       <section>
-        <h2 className="text-xl font-semibold mb-2">
-          Productos más vendidos {startDate && endDate && `(${startDate} → ${endDate})`}
+        <h2 className="text-lg sm:text-xl font-semibold mb-2 text-center sm:text-left text-white">
+          Productos más vendidos{" "}
+          {startDate && endDate && `(${startDate} → ${endDate})`}
         </h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 text-white">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {formattedTopProducts.map((p, i) => (
-            <div key={i} className="bg-gray-900 shadow rounded-2xl p-3 hover:shadow-lg transition">
+            <div
+              key={i}
+              className="bg-gray-900 shadow rounded-2xl p-3 hover:shadow-lg transition flex flex-col"
+            >
               {p.image ? (
                 <img
                   src={p.image}
                   alt={p.name}
-                  className="w-full h-40 object-cover rounded-xl text-white"
+                  className="w-full h-40 object-cover rounded-xl"
                 />
               ) : (
-                <div className="w-full h-40 black rounded-xl flex items-center justify-center text-gray-500">
+                <div className="w-full h-40 bg-black rounded-xl flex items-center justify-center text-gray-500">
                   Sin imagen
                 </div>
               )}
 
-              <h4 className="mt-3 font-semibold text-lg text-black">{p.name}</h4>
-              <p className="text-white text-sm">Vendidos: {p.totalSold}</p>
+              <h4 className="mt-3 font-semibold text-lg text-white truncate">
+                {p.name}
+              </h4>
+              <p className="text-gray-300 text-sm">Vendidos: {p.totalSold}</p>
             </div>
           ))}
         </div>
       </section>
     </div>
-
   );
 };
 

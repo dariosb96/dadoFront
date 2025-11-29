@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,7 +5,6 @@ import { toast } from "react-toastify";
 import { getCategories } from "../Redux/actions/Products/get_categories";
 import { createSell } from "../Redux/actions/Sells/createSell";
 import { getFilteredProducts } from "../Redux/actions/Products/get_filteredProducts";
-
 
 const Create_Sell = () => {
   const dispatch = useDispatch();
@@ -21,8 +19,12 @@ const Create_Sell = () => {
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedProduct, setSelectedProduct] = useState("");
-  const [selectedVariant, setSelectedVariant] = useState(""); 
+  const [selectedVariant, setSelectedVariant] = useState("");
   const [quantity, setQuantity] = useState(1);
+
+
+  const [sellPrice, setSellPrice] = useState("");
+
   const [sellProducts, setSellProducts] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -42,6 +44,16 @@ const Create_Sell = () => {
     }
   }, [dispatch, search]);
 
+
+  useEffect(() => {
+    if (selectedProduct) {
+      const prod = products.find((p) => p.id === selectedProduct);
+      if (prod) setSellPrice(prod.price);
+    } else {
+      setSellPrice("");
+    }
+  }, [selectedProduct, products]);
+
   const handleAddProduct = () => {
     if (!selectedProduct) {
       toast.error("Selecciona un producto válido");
@@ -53,19 +65,18 @@ const Create_Sell = () => {
       return;
     }
 
-    const product = products.find((p) => p.id === selectedProduct);
-    if (!product) {
-      toast.error("Producto no encontrado");
+    if (!sellPrice || sellPrice <= 0) {
+      toast.error("Ingresa un precio válido");
       return;
     }
 
+    const product = products.find((p) => p.id === selectedProduct);
     const variant =
       product.variants?.find((v) => v.id === selectedVariant) || null;
 
- 
     const availableStock = variant ? variant.stock : product.stock;
     const key = variant ? `${selectedProduct}-${variant.id}` : selectedProduct;
-
+     const finalUnitPrice = Number(sellPrice);
     const existing = sellProducts.find((p) => p.key === key);
     const totalQuantity = existing ? existing.quantity + quantity : quantity;
 
@@ -79,25 +90,34 @@ const Create_Sell = () => {
       ProductId: selectedProduct,
       variantId: variant ? variant.id : null,
       quantity,
+      finalPrice: finalUnitPrice,
       name: product.name,
       variantLabel: variant
         ? `${variant.color || ""} ${variant.size || ""}`.trim()
         : null,
     };
 
-    if (existing) {
-      setSellProducts(
-        sellProducts.map((p) =>
-          p.key === key ? { ...p, quantity: totalQuantity } : p
-        )
-      );
-    } else {
+   if (existing) {
+  setSellProducts(
+    sellProducts.map((p) =>
+      p.key === key
+        ? {
+            ...p,
+            quantity: totalQuantity,
+            finalPrice: finalUnitPrice, 
+          }
+        : p
+            )
+         );
+       }else {
       setSellProducts([...sellProducts, newItem]);
     }
 
     setSelectedProduct("");
     setSelectedVariant("");
     setQuantity(1);
+    setSellPrice("");
+
     toast.success(`Producto agregado: ${product.name} x${quantity}`);
   };
 
@@ -139,12 +159,9 @@ const Create_Sell = () => {
         </div>
       )}
 
-      <Link to="/" aria-label="Volver al inicio">
+      <Link to="/">
         <div className="absolute top-4 left-4 z-10">
-          <button
-            type="button"
-            className="bg-purple-800 hover:bg-purple-500 text-white font-medium px-3 py-1 rounded-md text-sm transition duration-300"
-          >
+          <button className="bg-purple-800 hover:bg-purple-500 text-white font-medium px-3 py-1 rounded-md text-sm transition duration-300">
             ← Inicio
           </button>
         </div>
@@ -155,7 +172,7 @@ const Create_Sell = () => {
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Categoría */}
+        {/* CATEGORÍA */}
         <div>
           <label className="block text-gray-600 font-semibold mb-2">
             Seleccionar categoría
@@ -174,33 +191,72 @@ const Create_Sell = () => {
           </select>
         </div>
 
-        {/* Selección de producto y variante */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
-          <select
-            value={selectedProduct}
-            onChange={(e) => {
-              setSelectedProduct(e.target.value);
-              setSelectedVariant("");
-            }}
-            className="flex-grow bg-gray-900 border border-purple-500 rounded-md px-4 py-2 text-gray-200"
-          >
-            <option value="">Selecciona un producto</option>
-            {Array.isArray(products) &&
-              products.map((prod) => (
-                <option key={prod.id} value={prod.id}>
-                  {prod.name}
-                </option>
-              ))}
-          </select>
+        {/* SELECCIÓN DE PRODUCTO Y VARIANTE */}
+        <div className="flex flex-col space-y-4">
+          <div>
+            <label className="block text-gray-600 font-semibold mb-2">
+              Selecciona un producto
+            </label>
+            <select
+              value={selectedProduct}
+              onChange={(e) => {
+                setSelectedProduct(e.target.value);
+                setSelectedVariant("");
+              }}
+              className="w-full bg-gray-900 border border-purple-500 rounded-md px-4 py-2 text-gray-200"
+            >
+              <option value="">Selecciona un producto</option>
+              {Array.isArray(products) &&
+                products.map((prod) => (
+                  <option key={prod.id} value={prod.id}>
+                    {prod.name}
+                  </option>
+                ))}
+            </select>
 
-          {/* Dropdown de variantes (si el producto tiene) */}
+            {/* Miniatura del producto */}
+           {selectedProduct && (
+  <div className="mt-3 flex items-center space-x-3">
+    
+    {/* Texto del lado izquierdo */}
+    <div className="flex flex-col">
+      <span className="text-gray-200 font-medium">
+        {products.find((p) => p.id === selectedProduct)?.name}
+      </span>
+
+      {/* STOCK DISPONIBLE */}
+      <span className="text-gray-400 text-sm">
+        Stock disponible:{" "}
+        {(() => {
+          const prod = products.find((p) => p.id === selectedProduct);
+          return prod?.variants?.length > 0
+            ? "Depende de la variante"
+            : prod?.stock ?? 0;
+        })()}
+      </span>
+    </div>
+
+    {/* Imagen */}
+    <img
+      src={
+        products.find((p) => p.id === selectedProduct)?.images?.[0]?.url ||
+        "https://via.placeholder.com/60x60?text=Sin+imagen"
+      }
+      className="w-16 h-16 object-cover rounded-md border border-gray-700"
+    />
+  </div>
+)}
+
+          </div>
+
+          {/* VARIANTE */}
           {selectedProduct &&
             products.find((p) => p.id === selectedProduct)?.variants?.length >
               0 && (
               <select
                 value={selectedVariant}
                 onChange={(e) => setSelectedVariant(e.target.value)}
-                className="flex-grow bg-gray-900 border border-purple-500 rounded-md px-4 py-2 text-gray-200"
+                className="w-full bg-gray-900 border border-purple-500 rounded-md px-4 py-2 text-gray-200"
               >
                 <option value="">Selecciona una variante</option>
                 {products
@@ -216,24 +272,45 @@ const Create_Sell = () => {
               </select>
             )}
 
-          <input
-            type="number"
-            min="1"
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            className="w-24 bg-black border border-purple-500 rounded-lg px-2 py-1 text-gray-200"
-          />
+         {/* CANTIDAD + PRECIO — SOLO SI HAY PRODUCTO SELECCIONADO */}
+{selectedProduct && (
+  <div className="flex items-center space-x-4 mt-4">
+    
+    {/* Cantidad */}
+    <input
+      type="number"
+      min="1"
+      value={quantity}
+      onChange={(e) => setQuantity(Number(e.target.value))}
+      className="w-20 bg-gray-900 rounded-lg px-2 py-1 text-gray-200"
+    />
 
-          <button
-            type="button"
-            onClick={handleAddProduct}
-            className="bg-purple-800 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition"
-          >
-            Agregar
-          </button>
+    {/* Precio por pieza */}
+    <div className="flex items-center space-x-2">
+      <span className="text-gray-300 font-medium">Precio:</span>
+      <input
+        type="number"
+        min="0"
+        value={sellPrice}
+        onChange={(e) => setSellPrice(e.target.value)}
+        className="w-24 bg-gray-900 rounded-lg px-2 py-1 text-gray-200"
+      />
+    </div>
+
+    {/* Botón agregar */}
+    <button
+      type="button"
+      onClick={handleAddProduct}
+      className="bg-purple-800 text-white px-2 py-1 rounded-lg hover:bg-purple-600 transition"
+    >
+      Agregar
+    </button>
+  </div>
+)}
+
         </div>
 
-        {/* Lista de productos seleccionados */}
+        {/* LISTA DE PRODUCTOS */}
         {sellProducts.length > 0 && (
           <div className="bg-gray-900 p-4 rounded-lg shadow-sm overflow-x-auto">
             <h3 className="text-lg font-semibold text-gray-200 mb-2">
@@ -243,16 +320,16 @@ const Create_Sell = () => {
               {sellProducts.map((p) => (
                 <li
                   key={p.key}
-                  className="flex justify-between text-purple-500 items-center bg-gray-800 p-2 rounded shadow"
+                  className="flex justify-between text-purple-500 items-center bg-gray-900 border border-gray-700 p-2 rounded shadow"
                 >
                   <span>
                     {p.name}{" "}
                     {p.variantLabel && (
-                      <span className="bg-black text-sm text-gray-500">
+                      <span className="text-gray-400 text-sm">
                         ({p.variantLabel})
                       </span>
                     )}{" "}
-                     - Cantidad: {p.quantity}
+                    - {p.quantity} pz - ${p.finalPrice}
                   </span>
                   <button
                     type="button"

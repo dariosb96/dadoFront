@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// 🔹 Carrusel con flechas debajo
+// Carrusel compacto y responsivo
 const ImageCarousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   if (!images || images.length === 0) {
     return (
-      <div className="w-full h-56 bg-gray-200 flex flex-col items-center justify-center rounded-lg">
-        <span className="text-gray-500">Sin imagen</span>
+      <div className="w-full h-20 sm:h-24 lg:h-28 bg-gray-200 flex items-center justify-center rounded-md">
+        <span className="text-gray-500 text-xs">Sin imagen</span>
       </div>
     );
   }
@@ -21,32 +21,29 @@ const ImageCarousel = ({ images }) => {
 
   return (
     <div className="w-full flex flex-col items-center">
-      {/* Imagen */}
-      <div className="w-full h-56 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+      <div className="w-full h-20 sm:h-24 lg:h-28 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
         <img
           src={images[currentIndex].url}
           alt={`imagen-${currentIndex}`}
           className="max-w-full max-h-full object-contain transition-all duration-500"
-          style={{ width: "auto", height: "100%", display: "block" }}
         />
       </div>
 
-      {/* 🔹 Flechas debajo de la imagen */}
       {images.length > 1 && (
-        <div className="flex justify-center items-center gap-6 mt-2">
+        <div className="flex justify-center items-center gap-4 mt-1">
           <button
             type="button"
             onClick={prevImage}
-            className="bg-purple-800 hover:bg-purple-600 text-white p-2 rounded-full transition"
+            className="bg-purple-800 hover:bg-purple-600 text-white p-1 rounded-md transition"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={12} />
           </button>
           <button
             type="button"
             onClick={nextImage}
-            className="bg-purple-800 hover:bg-purple-600 text-white p-2 rounded-full transition"
+            className="bg-purple-800 hover:bg-purple-600 text-white p-1 rounded-md transition"
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={12} />
           </button>
         </div>
       )}
@@ -54,7 +51,7 @@ const ImageCarousel = ({ images }) => {
   );
 };
 
-// 🔹 Card del producto
+// Card responsiva
 const ProductCard = ({ product, onEdit, onDelete }) => {
   const [showVariants, setShowVariants] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
@@ -70,30 +67,37 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
   };
 
   return (
-    <div className="border p-4 rounded-xl shadow bg-white hover:shadow-lg transition-all font-semibold text-black flex flex-col gap-3 min-w-0">
-      <h2 className="text-lg font-bold text-purple-800">{product.name}</h2>
-      <p className="text-sm text-gray-700">
-        Categoría: {product.Category?.name || "Sin categoría"}
-      </p>
-      <p>Precio de venta: ${product.price}</p>
-      <p>Precio de compra: ${product.buyPrice}</p>
-      <p>Piezas disponibles: {product.stock}</p>
-
+<div className="border p-2 sm:p-3 rounded-md shadow bg-white hover:shadow-md transition-all text-black flex flex-col gap-1 min-w-[150px] sm:min-w-[180px] lg:min-w-[220px]">
+  <h2 className="text-[10px] sm:text-sm lg:text-base font-bold text-purple-800 truncate">
+    {product.name}
+  </h2>
+  <p className="text-[8px] sm:text-xs lg:text-sm text-gray-700 truncate">
+    {product.Category?.name || "Sin categoría"}
+  </p>
+  <p className="text-[8px] sm:text-xs lg:text-sm text-gray-700">
+    Venta: ${product.price}
+  </p>
+  <p className="text-[8px] sm:text-xs lg:text-sm text-gray-700">
+    Compra: ${product.buyPrice}
+  </p>
+  <p className="text-[8px] sm:text-xs lg:text-sm text-gray-700">
+    Stock: {product.stock}
+  </p>
       {!showVariants ? (
         <>
           <ImageCarousel images={product.images} />
 
           {product.variants?.length > 0 && (
-            <div className="mt-3">
-              <h3 className="text-sm text-gray-600 font-medium mb-1">
-                Variantes disponibles:
+            <div className="mt-1">
+              <h3 className="text-[10px] sm:text-xs lg:text-sm text-gray-600 font-medium">
+                Variantes:
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1">
                 {product.variants.map((variant) => (
                   <button
                     key={variant.id}
                     onClick={() => handleVariantClick(variant)}
-                    className="px-3 py-1 bg-purple-200 text-purple-800 rounded-full text-sm font-medium hover:bg-purple-300 transition"
+                    className="px-2 py-0.5 bg-purple-200 text-purple-800 rounded-full text-[10px] sm:text-xs lg:text-sm hover:bg-purple-300 transition"
                   >
                     {variant.color || "Variante"}
                   </button>
@@ -104,30 +108,30 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
         </>
       ) : (
         <>
-          <h3 className="text-purple-700 font-semibold text-md">
+          <h3 className="text-purple-700 font-semibold text-xs sm:text-sm">
             Variante: {selectedVariant?.color || "N/A"}
           </h3>
-          <p>Stock: {selectedVariant?.stock ?? "N/A"}</p>
+          <p className="text-[10px] sm:text-xs">Stock: {selectedVariant?.stock ?? "N/A"}</p>
           <ImageCarousel images={selectedVariant?.images} />
           <button
             onClick={handleBackToProduct}
-            className="mt-3 text-sm text-blue-600 hover:underline"
+            className="mt-1 text-[10px] sm:text-xs text-blue-600 hover:underline"
           >
-            ← Volver al producto
+            ← Volver
           </button>
         </>
       )}
 
-      <div className="mt-4 flex justify-between">
+      <div className="mt-2 flex justify-between">
         <button
           onClick={() => onEdit(product)}
-          className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+          className="bg-blue-500 text-white px-2 py-1 rounded text-[10px] sm:text-xs lg:text-sm hover:bg-blue-600"
         >
-          Modificar
+          Editar
         </button>
         <button
           onClick={() => onDelete(product.id)}
-          className="bg-red-700 text-white px-4 py-1 rounded hover:bg-red-600"
+          className="bg-red-600 text-white px-2 py-1 rounded text-[10px] sm:text-xs lg:text-sm hover:bg-red-700"
         >
           Eliminar
         </button>

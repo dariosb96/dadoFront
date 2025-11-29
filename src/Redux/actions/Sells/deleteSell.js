@@ -8,7 +8,7 @@ export const deleteSell = (id_sell) => async (dispatch) => {
   dispatch({ type: DELETE_SELL_REQUEST });
 
   try {
-    const response = await api.delete(`/sells/${id_sell}`);
+    const response = await api.put(`/sells/cancel/${id_sell}`);
 
     dispatch({
       type: DELETE_SELL_SUCCESS,
