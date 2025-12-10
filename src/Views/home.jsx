@@ -69,9 +69,9 @@ const Home = () => {
             </div>
 
             {/* Contenido fijo sin scroll */}
-            <div className="p-2 bg-black bg-opacity-75">
-              <MyCatalogLink />
-            </div>
+           <div className="p-2 bg-black bg-opacity-75">
+  <MyCatalogLink onClose={() => setCatalogOpen(false)} />
+</div>
           </div>
         </div>
       )}

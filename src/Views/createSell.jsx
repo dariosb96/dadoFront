@@ -138,7 +138,7 @@ const Create_Sell = () => {
       setMessage("Venta registrada con éxito");
       setMessageType("success");
 
-      setTimeout(() => navigate("/home"), 1500);
+      setTimeout(() => navigate("/sells"), 1500);
     } catch (error) {
       setMessage(error?.response?.data?.error || "Error al registrar venta");
       setMessageType("error");

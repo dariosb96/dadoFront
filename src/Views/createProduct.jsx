@@ -176,7 +176,7 @@ const handleSubmit = async (e) => {
       setImagePreviews([]);
       setVariantPreviews([]);
     } else {
-      setTimeout(() => navigate("/home"), 1200);
+      setTimeout(() => navigate("/products"), 1200);
     }
   } catch (err) {
     console.error("Error al crear producto:", err);
