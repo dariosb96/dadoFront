@@ -1,8 +1,10 @@
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getUserSells } from "../Redux/actions/Sells/getUserSells";
 import ConfirmSellModal from "../components/sales/confirmModal";
+import SellDetailModal from "../components/sales/SellDetail";
 import { confirmSell } from "../Redux/actions/Sells/confirmSell";
 import { deleteSell } from "../Redux/actions/Sells/deleteSell";
 
@@ -15,6 +17,10 @@ const View_Sells = () => {
   const [selectedSell, setSelectedSell] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [sellToDelete, setSellToDelete] = useState(null);
+
+  // Estado para detalles
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [sellDetails, setSellDetails] = useState(null);
 
   useEffect(() => {
     dispatch(getUserSells(token));
@@ -52,9 +58,7 @@ const View_Sells = () => {
     if (sellToDelete) {
       try {
         await dispatch(deleteSell(sellToDelete));
-
         dispatch(getUserSells(token));
-
         alert("Venta eliminada con éxito");
       } catch (err) {
         alert(
@@ -66,6 +70,11 @@ const View_Sells = () => {
         setSellToDelete(null);
       }
     }
+  };
+
+  const handleViewDetails = (sell) => {
+    setSellDetails(sell);
+    setDetailsModalOpen(true);
   };
 
   return (
@@ -95,7 +104,7 @@ const View_Sells = () => {
         </div>
       </div>
 
-      <h2 className="text-2xl text-white font-semibold mb-4 mt-5">Todas las Ventas</h2>
+      <h2 className="text-xl text-white font-semibold mb-4 mt-5">Todas las Ventas</h2>
 
       {/* Estado de carga o error */}
       {loading && <p>Cargando ventas...</p>}
@@ -103,134 +112,54 @@ const View_Sells = () => {
 
       {/* Listado de ventas */}
       {!loading && sells && sells.length > 0 ? (
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {sells.map((sell) => (
             <li
               key={sell.id}
-              className="border p-4 rounded-xl shadow-md bg-purple-50 text-white"
+              className="border p-2 rounded-lg shadow bg-purple-100 text-black text-sm"
             >
-              <p>
-                <span className="font-semibold">Fecha:</span>{" "}
-                {new Date(sell.creationDate).toLocaleDateString()}
-              </p>
-              <p>
-                <span className="font-semibold">Estado:</span> {sell.status}
-              </p>
-              <p>
-                <span className="font-semibold">Total:</span> ${sell.totalAmount}
-              </p>
+              <p><span className="font-semibold">Fecha:</span> {new Date(sell.creationDate).toLocaleDateString()}</p>
+              <p><span className="font-semibold">Estado:</span> {sell.status}</p>
+              <p><span className="font-semibold">Total:</span> ${sell.totalAmount}</p>
 
-              {/* Productos */}
-              <div className="mt-4">
-                <h3 className="font-semibold text-lg mb-2">Productos:</h3>
-
-               {Array.isArray(sell.products) && sell.products.length > 0 ? (
-  <div
-    className={
-      sell.products.length === 1
-        ? "grid grid-cols-1 md:grid-cols-1 gap-4"
-        : "grid sm:grid-cols-2 md:grid-cols-3 gap-4"
-    }
-  >
-    {sell.products.map((prod) => {
-      const mainImage =
-        prod.images?.[0]?.url ||
-        prod.variants?.[0]?.images?.[0]?.url ||
-        "https://via.placeholder.com/150x150?text=Sin+Imagen";
-
-      return (
-        <div
-          key={prod.id}
-          className={`bg-white border border-purple-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden
-            ${sell.products.length === 1 ? "md:col-span-3 w-full" : ""}`}
-        >
-          {/* Imagen */}
-          <div className="relative w-full h-40 bg-gray-100">
-            <img
-              src={mainImage}
-              alt={prod.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          {/* Info */}
-          <div className="p-3 text-black">
-            <p className="font-semibold text-purple-800">{prod.name}</p>
-
-            <div className="mt-2 text-sm">
-              <p>
-                <span className="font-medium text-black">Cantidad:</span>{" "}
-                {prod.SellProduct?.quantity ?? 0}
-              </p>
-              <p>
-                <span className="font-medium text-black">Precio:</span> $
-                {prod.SellProduct?.price ?? 0}
-              </p>
-            </div>
-
-            {/* Variantes */}
-            {Array.isArray(prod.variants) && prod.variants.length > 0 && (
-              <div className="mt-3 border-t border-gray-200 pt-2">
-                <p className="font-medium text-gray-700 mb-1">Variantes:</p>
-                <div className="flex flex-wrap gap-3">
-                  {prod.variants.map((variant) => (
-                    <div
-                      key={variant.id}
-                      className="bg-purple-50 border border-purple-200 rounded-xl p-2 flex flex-col items-center w-[100px]"
-                    >
-                      <span className="text-xs capitalize text-gray-800">
-                        {variant.color || "Sin color"}
-                      </span>
-                      {variant.size && (
-                        <span className="text-xs text-gray-500">{variant.size}</span>
-                      )}
-
-                      {variant.images?.length > 0 ? (
-                        <div className="flex gap-1 mt-1">
-                          {variant.images.slice(0, 2).map((img) => (
-                            <img
-                              key={img.id}
-                              src={img.url}
-                              alt="Variante"
-                              className="w-8 h-8 object-cover rounded-md border"
-                            />
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="w-8 h-8 bg-gray-200 rounded-md mt-1" />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    })}
-  </div>
-) : (
-  <p className="ml-4 text-gray-500 italic">Sin productos asociados</p>
-)}
-
+              {/* Mini imágenes de productos */}
+              <div className="flex gap-2 mt-2">
+                {sell.products.map((prod) => {
+                  const img = prod.images?.[0]?.url || "https://via.placeholder.com/50";
+                  return (
+                    <img
+                      key={prod.id}
+                      src={img}
+                      alt={prod.name}
+                      className="w-12 h-12 object-cover rounded-md border"
+                    />
+                  );
+                })}
               </div>
 
               {/* Botones */}
-              <div className="mt-4 flex space-x-4">
+              <div className="mt-2 flex flex-wrap gap-2">
+                <button
+                  onClick={() => handleViewDetails(sell)}
+                  className="bg-blue-600 hover:bg-blue-500 text-white font-medium px-3 py-1 rounded-md text-xs transition duration-300"
+                >
+                  Ver detalles
+                </button>
+
                 {sell.status === "pendiente" && (
                   <button
                     onClick={() => handleModify(sell.id)}
-                    className="bg-purple-800 hover:bg-purple-600 text-white font-medium px-4 py-2 rounded-md transition duration-300"
+                    className="bg-purple-800 hover:bg-purple-600 text-white font-medium px-3 py-1 rounded-md text-xs transition duration-300"
                   >
-                    Marcar como finalizada
+                    Finalizar
                   </button>
                 )}
 
                 <button
                   onClick={() => handleDeleteClick(sell.id)}
-                  className="bg-red-600 hover:bg-red-500 text-white font-medium px-4 py-2 rounded-md transition duration-300"
+                  className="bg-red-600 hover:bg-red-500 text-white font-medium px-3 py-1 rounded-md text-xs transition duration-300"
                 >
-                  Eliminar venta
+                  Eliminar
                 </button>
               </div>
             </li>
@@ -240,7 +169,7 @@ const View_Sells = () => {
         !loading && <p>No hay ventas registradas.</p>
       )}
 
-      {/* Modales */}
+      {/* Modales existentes */}
       <ConfirmSellModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -260,6 +189,13 @@ const View_Sells = () => {
         confirmText="Eliminar"
         cancelText="Cancelar"
         confirmColor="bg-red-600 hover:bg-red-500"
+      />
+
+      {/* Modal de detalles */}
+      <SellDetailModal
+        isOpen={detailsModalOpen}
+        onClose={() => setDetailsModalOpen(false)}
+        sell={sellDetails}
       />
     </div>
   );

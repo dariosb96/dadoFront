@@ -15,14 +15,22 @@ const Login = () => {
   const error = useSelector(state => state.auth.error);
   const loading = useSelector(state => state.auth.loading);
   const token = useSelector(state => state.auth.token);
+  const [rememberMe, setRememberMe] = useState(false);
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(LoginUser({
+  dispatch(
+  LoginUser(
+    {
       email: useremail,
       password: userpassword
-    }));
+    },
+    rememberMe
+  )
+);
   };
+
   useEffect(() => {
     if (token) {
       navigate('/home');
@@ -66,6 +74,18 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 text-gray-400 focus:ring-purple-500 focus:border-purple-500 shadow-sm"
             />
+<div className="flex items-center gap-2 text-gray-400">
+  <input
+    type="checkbox"
+    id="rememberMe"
+    checked={rememberMe}
+    onChange={(e) => setRememberMe(e.target.checked)}
+    className="accent-purple-600"
+  />
+  <label htmlFor="rememberMe" className="text-sm cursor-pointer">
+    Mantener sesión iniciada
+  </label>
+</div>
 
             <button
               type="submit"

@@ -1,8 +1,14 @@
-const token = localStorage.getItem("token");
+const token =
+  localStorage.getItem("token") ||
+  sessionStorage.getItem("token");
+
+const user =
+  localStorage.getItem("user") ||
+  sessionStorage.getItem("user");
 
 const initialState = {
   token: token ?? null,
-  user: token ? JSON.parse(localStorage.getItem("user")) : null,
+  user: user ? JSON.parse(user) : null,
   loading: false,
   error: null,
 };
@@ -23,8 +29,8 @@ case "LOGIN_SUCCESS":
     case "LOGIN_FAILURE":
       return { ...state, error: action.payload, loading: false };
     case "LOGOUT":
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      localStorage.clear();
+  sessionStorage.clear();
       return {
         token: null,
         user: null,

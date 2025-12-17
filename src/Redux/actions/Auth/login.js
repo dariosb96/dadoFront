@@ -5,43 +5,31 @@ export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 export const LOGOUT = 'LOGOUT';
 
-export const LoginUser = (credentials) => async (dispatch) => {
-    try {
-        dispatch({ type: LOGIN_REQUEST });
+export const LoginUser = (credentials, rememberMe) => async (dispatch) => {
+  try {
+    dispatch({ type: LOGIN_REQUEST });
 
-        const { data } = await api.post(`/user/login`, credentials);
+    const { data } = await api.post("/user/login", credentials);
 
-        if (data.userdata && data.userdata.id) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.userdata));
+    const storage = rememberMe ? localStorage : sessionStorage;
 
-            dispatch({
-                type: LOGIN_SUCCESS,
-                payload: { token: data.token, user: data.userdata },
-            });
-        } else {
-            throw new Error("Usuario no tiene ID");
-        }
+    storage.setItem("token", data.token);
+    storage.setItem("user", JSON.stringify(data.userdata));
 
-    } catch (error) {
-        const errorMessage =
-            error.response?.data?.message ||
-            error.response?.statusText ||
-            error.message;
-
-        if (
-            errorMessage === "El token ha expirado" ||
-            errorMessage === "Token inválido"
-        ) {
-            dispatch(logout());
-        }
-
-        dispatch({
-            type: LOGIN_FAILURE,
-            payload: errorMessage,
-        });
-    }
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: { token: data.token, user: data.userdata },
+    });
+  } catch (error) {
+    dispatch({
+      type: LOGIN_FAILURE,
+      payload:
+        error.response?.data?.message ||
+        error.message,
+    });
+  }
 };
+
 
 export const logout = () => (dispatch) => {
     localStorage.removeItem('token');

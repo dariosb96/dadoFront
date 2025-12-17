@@ -11,7 +11,6 @@ export const updateUser = (userId, formData) => {
 
       const user = response.data.user ?? response.data; 
       dispatch({ type: UPDATE_USER + "_SUCCESS", payload: user });
-
       return user;
     } catch (error) {
       const payload = error.response?.data?.message || error.message;
