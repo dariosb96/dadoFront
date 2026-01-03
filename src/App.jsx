@@ -16,6 +16,7 @@ import AllProductsPage from './Views/productsGeneral'
 import CatalogList from './Views/CatalogList'
 import UpdateUser from './Views/updateUser'
 import UserProfile from './Views/profile'
+import DashboardSPA from './Views/DashBoard'
 
 function App() {
  
@@ -33,7 +34,7 @@ function App() {
       <Route path="/createProd" element={<Create_Product/>} />
       <Route path="/my-catalog" element={<MyCatalogLink/>}/>
       <Route path="/createSell" element={<Create_Sell/>}/>
-      <Route path="/dash" element={<Dashboard/>} />
+      <Route path="/dash" element={<DashboardSPA/>} />
       <Route path="/Sells" element={ <View_Sells/>} />
       <Route path="/products" element={<AllProductsPage/>}/>
       <Route path="/p" element={<UpdateUser/>}/>

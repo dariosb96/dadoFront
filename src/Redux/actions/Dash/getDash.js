@@ -1,6 +1,5 @@
 import { api } from "../../api";
 
-// Acción principal: carga dashboard + productos con filtro opcional
 export const fetchDashboardData =
   (startDate = null, endDate = null) =>
   async (dispatch) => {
@@ -9,7 +8,6 @@ export const fetchDashboardData =
     try {
       const noCacheHeaders = { "Cache-Control": "no-cache" };
 
-      // Si hay fechas, las incluimos en la query
       const query =
         startDate && endDate
           ? `?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`
@@ -21,6 +19,8 @@ export const fetchDashboardData =
           api.get("/dash/sales/month", { headers: noCacheHeaders }),
           api.get(`/dash/top-products${query}`, { headers: noCacheHeaders }),
           api.get("/dash/sales/user", { headers: noCacheHeaders }),
+          api.get("/dash/sales/week", { headers: noCacheHeaders }),
+        api.get("/dash/product-profit", { headers: noCacheHeaders }),
         ]);
 
       dispatch({
