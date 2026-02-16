@@ -5,86 +5,72 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import logo from "../assets/logo-black.png";
 
-// Normalizar imágenes
+/* ---------------- NORMALIZE IMAGES ---------------- */
 const normalizeImages = (images) => {
-  if (!images) return [];
   if (!Array.isArray(images)) return [];
   return images
     .map((it) => {
-      if (!it) return null;
       if (typeof it === "string") return { url: it };
-      if (typeof it === "object") {
-        return { url: it.url || it.path || it.secure_url || it.src || it.image || null };
-      }
+      if (typeof it === "object")
+        return { url: it.url || it.secure_url || it.src || null };
       return null;
     })
-    .filter((i) => i && !!i.url);
+    .filter((i) => i?.url);
 };
 
-// Carrusel de imágenes
+/* ---------------- IMAGE CAROUSEL ---------------- */
 const ImageCarousel = ({ images = [], fixedHeight = 200, onImageClick }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const imgs = normalizeImages(images);
 
-  useEffect(() => {
-    setCurrentIndex(0);
-  }, [images]);
+  useEffect(() => setCurrentIndex(0), [images]);
 
   if (!imgs.length) {
     return (
       <div
-        className="w-full bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden"
+        className="bg-gray-100 flex items-center justify-center rounded-xl"
         style={{ height: fixedHeight }}
       >
-        <span className="text-gray-500">Sin imagen</span>
+        <span className="text-gray-400 text-sm">Sin imagen</span>
       </div>
     );
   }
 
-  const prevImage = () =>
-    setCurrentIndex((prev) => (prev === 0 ? imgs.length - 1 : prev - 1));
-  const nextImage = () =>
-    setCurrentIndex((prev) => (prev === imgs.length - 1 ? 0 : prev + 1));
+  const prev = () =>
+    setCurrentIndex((i) => (i === 0 ? imgs.length - 1 : i - 1));
+  const next = () =>
+    setCurrentIndex((i) => (i === imgs.length - 1 ? 0 : i + 1));
 
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="w-full">
       <div
-        className="w-full rounded-lg overflow-hidden flex items-center justify-center"
-        style={{
-          height: fixedHeight,
-          width: "100%",
-          position: "relative",
-        }}
+        className="relative rounded-xl overflow-hidden bg-gray-900"
+        style={{ height: fixedHeight }}
       >
         <img
           src={imgs[currentIndex].url}
-          alt={`imagen-${currentIndex}`}
+          alt=""
           onClick={() => onImageClick?.(imgs[currentIndex].url)}
-          className="transition-all duration-300 cursor-pointer"
-          style={{
-            maxHeight: "100%",
-            maxWidth: "100%",
-            objectFit: "contain",
-          }}
+          className="w-full h-full object-contain cursor-pointer"
         />
       </div>
 
       {imgs.length > 1 && (
         <div className="flex justify-center items-center gap-3 mt-2">
           <button
-            onClick={prevImage}
-            className="bg-purple-800 hover:bg-purple-600 text-white p-2 rounded transition"
+            onClick={prev}
+            className="p-1 rounded-full bg-gray-900 hover:bg-gray-300 transition"
           >
             <ChevronLeft size={16} />
           </button>
 
-          <span className="text-xs text-white px-2 py-0.5 rounded bg-black/40">
-            {currentIndex + 1} / {imgs.length}
+          <span className="text-xs text-gray-300">
+            {currentIndex + 1}/{imgs.length}
           </span>
 
           <button
-            onClick={nextImage}
-            className="bg-purple-800 hover:bg-purple-600 text-white p-2 rounded transition"
+            onClick={next}
+            className="p-1 rounded-full bg-gray-900 hover:bg-gray-300 transition"
           >
             <ChevronRight size={16} />
           </button>
@@ -94,76 +80,75 @@ const ImageCarousel = ({ images = [], fixedHeight = 200, onImageClick }) => {
   );
 };
 
-// Tarjeta de producto
+/* ---------------- PRODUCT CARD ---------------- */
 const CatalogProductCard = ({ product, openModal }) => {
   const [showVariant, setShowVariant] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
 
   const productImages = normalizeImages(product?.images);
-  const variants = Array.isArray(product?.variants) ? product.variants : [];
-
-  const handleVariantClick = (variant) => {
-    const vImages = normalizeImages(variant?.images);
-    const finalImages = vImages.length ? vImages : productImages;
-    setSelectedVariant({ ...variant, _images: finalImages });
-    setShowVariant(true);
-  };
-
-  const handleBack = () => {
-    setSelectedVariant(null);
-    setShowVariant(false);
-  };
+  const variants = product?.variants || [];
 
   const active = showVariant ? selectedVariant : product;
 
-  return (
-    <div className="border p-4 rounded-xl shadow bg-black bg-opacity-75 hover:shadow-lg transition-all text-black flex flex-col gap-3 border-purple-800">
-      
-      <h2 className="text-lg font-bold text-purple-400 break-words">
-        {active?.name}
-      </h2>
-      <p className="text-gray-200 font-semibold">${active?.price}</p>
-      <p className="text-sm text-gray-500">
-        Piezas disponibles: {active?.stock}
-      </p>
+  const handleVariantClick = (variant) => {
+    const vImages = normalizeImages(variant?.images);
+    setSelectedVariant({
+      ...variant,
+      _images: vImages.length ? vImages : productImages,
+    });
+    setShowVariant(true);
+  };
 
-      {/* Carrusel */}
+  return (
+    <div className="bg-gray-900 bg-opacity-75 rounded-2xl shadow-sm hover:shadow-lg transition p-3 flex flex-col justify-between">
+      
       <ImageCarousel
         images={active?._images ?? productImages}
-        fixedHeight={180}
-        onImageClick={(url) => openModal(url)}
+        fixedHeight={160}
+        onImageClick={openModal}
       />
 
-      {/* Variantes */}
-      {!showVariant ? (
-        variants.length > 0 && (
-          <div className="mt-3">
-            <h3 className="text-sm text-gray-400 mb-2">Variantes:</h3>
-            <div className="flex flex-wrap gap-2">
-              {variants.map((variant) => (
-                <button
-                  key={variant.id}
-                  onClick={() => handleVariantClick(variant)}
-                  className="px-3 py-1 bg-gray-700 text-white rounded-full text-sm font-medium hover:bg-purple-200 transition"
-                >
-                  {variant.color || variant.size || "Variante"}
-                </button>
-              ))}
-            </div>
-          </div>
-        )
-      ) : (
+      <div className="mt-3 space-y-1">
+        <h2 className="font-sants text-gray-300 text-sm line-clamp-2">
+          {active?.name}
+        </h2>
+
+        <p className="text-lg font-sants text-indigo-400">
+          ${active?.price}
+        </p>
+
+        <p className="text-xs text-gray-400">
+          Stock: {active?.stock}
+        </p>
+      </div>
+
+      {!showVariant && variants.length > 0 && (
+        <div className="flex flex-wrap gap-1 mt-2">
+          {variants.map((v) => (
+            <button
+              key={v.id}
+              onClick={() => handleVariantClick(v)}
+              className="text-xs px-2 py-1 border rounded-full hover:bg-indigo-50"
+            >
+              {v.color || v.size || "Variante"}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {showVariant && (
         <button
-          onClick={handleBack}
-          className="bg-purple-700 mt-3 text-sm text-white hover:underline"
+          onClick={() => setShowVariant(false)}
+          className="text-xs text-indigo-600 mt-2"
         >
-          ← Volver al producto
+          ← Volver
         </button>
       )}
     </div>
   );
 };
 
+/* ---------------- PAGE ---------------- */
 const CatalogPage = () => {
   const dispatch = useDispatch();
   const { userId } = useParams();
@@ -181,82 +166,62 @@ const CatalogPage = () => {
 
   useEffect(() => {
     if (userId) dispatch(fetchCatalogByUser(userId, category));
-  }, [dispatch, userId, category]);
-
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === "Escape") setModalImage(null);
-    };
-    window.addEventListener("keydown", handleEsc);
-    return () => window.removeEventListener("keydown", handleEsc);
-  }, []);
+  }, [userId, category]);
 
   if (loading)
-    return <p className="p-4 text-center text-gray-600">Cargando catálogo...</p>;
+    return <p className="text-center mt-10">Cargando catálogo...</p>;
+
   if (error)
-    return <p className="p-4 text-center text-red-500">Error: {error}</p>;
+    return <p className="text-center text-red-500 mt-10">{error}</p>;
 
   return (
-    <div className="min-h-screen text-black">
-      
-      {/* Logo */}
-      <div className="w-full bg-white bg-opacity-50 rounded-full flex justify-center items-center">
-        <img src={logo} alt="Logo" className="w-10 h-auto object-contain p-1" />
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
 
-      {/* Mostrar nombre de negocio */}
-      {showBusiness && (
-        <h1 className="text-white text-3xl font-bold italic text-center mt-2 mb-2 drop-shadow-md">
-          {businessName || "Catálogo"}
-        </h1>
-      )}
+      <div className="flex bg-white flex-col items-center py-1 gap-2 bg-opacity-25">
+        <img src={logo} className="w-12" />
 
-      {/* Mostrar número de teléfono */}
-      {showPhone && phone && (
-        <p className="text-center text-gray-300 text-lg mb-4">
-          📞 {phone}
-        </p>
-      )}
+        {showBusiness && (
+          <h1 className="text-2xl font-bold text-gray-800">
+            {businessName}
+          </h1>
+        )}
 
-      <div className="max-w-7xl mx-auto px-4 py-6 rounded-xl shadow-lg">
-        {catalog?.length ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 items-stretch">
-            {catalog.map((product) => (
-              <CatalogProductCard
-                key={product.id}
-                product={product}
-                openModal={(url) => setModalImage(url)}
-              />
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-gray-500">No hay productos.</p>
+        {showPhone && phone && (
+          <p className="text-gray-500">{phone}</p>
         )}
       </div>
 
-      {/* Modal de imagen */}
+      <div className="max-w-7xl mx-auto px-3 pb-10">
+
+        <div
+          className="
+          grid
+          grid-cols-2
+          sm:grid-cols-2
+          md:grid-cols-3
+          lg:grid-cols-4
+          gap-3
+        "
+        >
+          {catalog?.map((product) => (
+            <CatalogProductCard
+              key={product.id}
+              product={product}
+              openModal={(url) => setModalImage(url)}
+            />
+          ))}
+        </div>
+      </div>
+
       {modalImage && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
           onClick={() => setModalImage(null)}
+          className="fixed inset-0 bg-black/80 flex items-center justify-center p-4"
         >
-          <div
-            className="relative max-w-4xl w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setModalImage(null)}
-              className="absolute -top-10 right-0 text-white text-xl font-bold"
-            >
-              ✕
-            </button>
-
-            <img
-              src={modalImage}
-              alt="Vista ampliada"
-              className="w-full max-h-[90vh] object-contain rounded-lg"
-            />
-          </div>
+          <img
+            src={modalImage}
+            className="max-h-[90vh] rounded-xl"
+          />
         </div>
       )}
     </div>
