@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import logo from "../assets/logo-black.png";
 
-/* ---------------- NORMALIZE IMAGES ---------------- */
+
 const normalizeImages = (images) => {
   if (!Array.isArray(images)) return [];
   return images
@@ -18,7 +18,6 @@ const normalizeImages = (images) => {
     .filter((i) => i?.url);
 };
 
-/* ---------------- IMAGE CAROUSEL ---------------- */
 const ImageCarousel = ({ images = [], fixedHeight = 200, onImageClick }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const imgs = normalizeImages(images);
@@ -28,10 +27,10 @@ const ImageCarousel = ({ images = [], fixedHeight = 200, onImageClick }) => {
   if (!imgs.length) {
     return (
       <div
-        className="bg-gray-100 flex items-center justify-center rounded-xl"
+        className="bg-gray-900 flex items-center justify-center rounded-xl"
         style={{ height: fixedHeight }}
       >
-        <span className="text-gray-400 text-sm">Sin imagen</span>
+        <span className="text-gray-100 text-sm">Sin imagen</span>
       </div>
     );
   }
@@ -56,7 +55,7 @@ const ImageCarousel = ({ images = [], fixedHeight = 200, onImageClick }) => {
       </div>
 
       {imgs.length > 1 && (
-        <div className="flex justify-center items-center gap-3 mt-2">
+        <div className="flex justify-center items-center gap-2 mt-1">
           <button
             onClick={prev}
             className="p-1 rounded-full bg-gray-900 hover:bg-gray-300 transition"
@@ -80,7 +79,6 @@ const ImageCarousel = ({ images = [], fixedHeight = 200, onImageClick }) => {
   );
 };
 
-/* ---------------- PRODUCT CARD ---------------- */
 const CatalogProductCard = ({ product, openModal }) => {
   const [showVariant, setShowVariant] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
@@ -100,7 +98,7 @@ const CatalogProductCard = ({ product, openModal }) => {
   };
 
   return (
-    <div className="bg-gray-900 bg-opacity-75 rounded-2xl shadow-sm hover:shadow-lg transition p-3 flex flex-col justify-between">
+    <div className="bg-gray-900 bg-opacity-75 rounded-xl shadow-sm hover:shadow-lg transition p-2 flex flex-col justify-between">
       
       <ImageCarousel
         images={active?._images ?? productImages}
@@ -108,16 +106,16 @@ const CatalogProductCard = ({ product, openModal }) => {
         onImageClick={openModal}
       />
 
-      <div className="mt-3 space-y-1">
-        <h2 className="font-sants text-gray-300 text-sm line-clamp-2">
+      <div className="mt-2 space-y-1">
+        <h2 className="font-sants text-gray-300 text-sm line-clamp-1">
           {active?.name}
         </h2>
 
-        <p className="text-lg font-sants text-indigo-400">
+        <p className="text-l font-sants text-indigo-400">
           ${active?.price}
         </p>
 
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-gray-500">
           Stock: {active?.stock}
         </p>
       </div>
@@ -148,7 +146,6 @@ const CatalogProductCard = ({ product, openModal }) => {
   );
 };
 
-/* ---------------- PAGE ---------------- */
 const CatalogPage = () => {
   const dispatch = useDispatch();
   const { userId } = useParams();
@@ -177,8 +174,8 @@ const CatalogPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
 
-      <div className="flex bg-white flex-col items-center py-1 gap-2 bg-opacity-25">
-        <img src={logo} className="w-12" />
+      <div className="flex bg-white flex-col items-center py-1 gap-1 bg-opacity-25 rounded-full">
+        <img src={logo} className="w-5" />
 
         {showBusiness && (
           <h1 className="text-2xl font-bold text-gray-800">
