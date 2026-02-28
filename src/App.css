@@ -1,16 +1,23 @@
+@import "tailwindcss";
+
+
 body {
   margin: 0;
   padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  /* REMOVIDO: display:flex y place-items:center — rompen el scroll en mobile
+     y crean conflictos con modales fixed */
   background: url("./assets/black.avif") no-repeat center center fixed;
   background-size: cover;
 }
 
+/* #root NO debe tener transform, filter ni will-change
+   ya que crean un stacking context que atrapa los modales con position:fixed
+   y rompe backdrop-filter (blur) */
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 1rem;
   text-align: center;
 }
-
-
-
