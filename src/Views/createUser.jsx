@@ -90,7 +90,7 @@ const CreateUser = () => {
             Volver
           </Link>
 
-          <img src={logo} alt="logo" className="w-6 lg:w-10" />
+          <img src={logo} alt="logo" className="w-6  lg:w-10" />
         </div>
 
         <h1 className="text-2xl md:text-3xl font-semibold text-white text-center lg:text-left mb-6">

@@ -23,29 +23,28 @@ export default function CatalogList() {
 
   return (
       
-    <div className=" text-black bg-black bg-opacity-50 py-5 px-4 text-white">
+    <div className="text-black bg-black bg-opacity-75 py-2 px-6 text-white rounded-xl">
      
       <span className="text-2xl font-semibold "> Catálogos públicos</span>
-      <div className="max-w-4xl mx-auto grid gap-6 md:grid-cols-3 lg:grid-cols-4 py-2 pt-5 sm:grid-cols-2">
+      <div className="max-w-4xl mx-auto grid gap-3 md:grid-cols-3 lg:grid-cols-4 py-2 pt-5 sm:grid-cols-2">
         {catalogs.map((c) => (
           <div
             key={c.id}
            onClick={() => navigate(`/catalog/${c.id}`)}
 
-            className="bg-gray-900 shadow-lg rounded-2xl p-8 cursor-pointer hover:shadow-2xl hover:scale-105 transition-transform"
+            className="bg-gray-900 shadow-lg rounded-2xl p-6 cursor-pointer hover:shadow-2xl hover:scale-105 transition-transform"
           >
-            <h2 className="text-l font-semibold text-gray-200 mb-3">
-              Nombre: {c.businessName}
+            <h2 className="text-xl font-semibold text-gray-200 mb-3">
+               {c.businessName}
             </h2>
 
-            <p className="text-sm text-gray-400 font-semibold mb-1">Categorías:</p>
             <ul className="flex flex-wrap gap-1">
               {c.categories.map((cat) => (
                 <li
                   key={cat.category}
-                  className="bg-purple-800 text-white text-sm px-2 py-1 rounded-full"
+                  className="text-purple-500 text-sm px-2 py-1 rounded-full"
                 >
-                  {cat.category}
+                 -{cat.category}
                 </li>
               ))}
             </ul>

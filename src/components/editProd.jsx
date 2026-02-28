@@ -287,109 +287,292 @@ for (let [key, value] of data.entries()) {
 };
 
   if (!isOpen) return null;
+  const ImageBox = ({ src, onRemove, small }) => (
+  <div className={`relative ${small ? "w-16 h-16" : "w-full h-24"}`}>
+    <img
+      src={src}
+      className="w-full h-full object-cover rounded-md"
+      alt=""
+    />
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto p-4">
-      <div className="flex items-center justify-center min-h-full">
-        <div className="bg-black  rounded-lg w-full max-w-4xl max-h-[90vh] p-6 overflow-y-auto">
-          <h2 className="text-xl font-bold mb-4 text-white">Editar producto</h2>
+    <button
+      type="button"
+      onClick={onRemove}
+      className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
+    >
+      ✕
+    </button>
+  </div>
+);
 
-          <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
-            {/* PRODUCT FIELDS */}
-            <div className="grid grid-cols-1 gap-3">
-              <input type="text" name="name" value={form.name} onChange={(e) => updateFormField("name", e.target.value)} placeholder="Nombre" className="w-full p-2 border rounded" />
-              <input type="text" name="color" value={form.color} onChange={(e) => updateFormField("color", e.target.value)} placeholder="color" className="w-full p-2 border rounded" />
-              <div className="flex gap-2">
-                <input type="number" name="price" value={form.price} onChange={(e) => updateFormField("price", e.target.value)} placeholder="Precio" className="w-1/3 p-2 border rounded" />
-                <input type="number" name="buyPrice" value={form.buyPrice} onChange={(e) => updateFormField("buyPrice", e.target.value)} placeholder="Precio de compra" className="w-1/3 p-2 border rounded" />
-                <input type="number" name="stock" value={form.stock} onChange={(e) => updateFormField("stock", e.target.value)} placeholder="Stock" className="w-1/3 p-2 border rounded" />
-              </div>
-              <textarea name="description" value={form.description} onChange={(e) => updateFormField("description", e.target.value)} placeholder="Descripción" className="w-full p-2 border rounded" />
-            </div>
+return (
+  <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div className="bg-zinc-900 w-full max-w-5xl h-[90vh] rounded-xl shadow-2xl flex flex-col overflow-hidden">
 
-            {/* MAIN IMAGES */}
-            <div>
-              <label className="block text-sm mb-1">Imágenes actuales</label>
-              <div className="grid grid-cols-3 gap-2 mb-2">
-                {existingImages.map((img) => (
-                  <div key={img.id || img.public_id} className="relative">
-                    <img src={img.url} alt="existing" className="w-full h-28 object-cover rounded" />
-                    <button type="button" onClick={() => removeExistingMainImage(img.id || img.public_id)} className="absolute top-1.5 right-1.5 bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">X</button>
-                  </div>
-                ))}
-              </div>
+      {/* HEADER */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-700 bg-zinc-900 sticky top-0 z-10">
+        <h2 className="text-lg font-semibold text-white">Editar producto</h2>
 
-              <label className="block text-sm mb-1">Agregar nuevas imágenes principales</label>
-              <input key={"main-file-input-" + (product?.id ?? "new")} type="file" multiple name="newImages" onChange={handleMainImagesChange} accept="image/*" />
-              {previewImages.length > 0 && (
-                <div className="grid grid-cols-3 gap-2 mt-2">
-                  {previewImages.map((src, i) => (
-                    <div key={src + "_" + i} className="relative">
-                      <img src={src} alt={`preview-${i}`} className="w-full h-28 object-cover rounded" />
-                      <button type="button" onClick={() => removeNewMainImage(i)} className="absolute top-1.5 right-1.5 bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700">X</button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+        <button
+          onClick={onClose}
+          className="w-8 h-8 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 text-white"
+        >
+          ✕
+        </button>
+      </div>
 
-            {/* VARIANTS */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-semibold">Variantes</h3>
-                <button type="button" onClick={addVariant} className="bg-blue-600 text-white px-3 py-1 rounded">+ Agregar variante</button>
-              </div>
+      {/* BODY */}
+      <form
+        onSubmit={handleSubmit}
+        className="flex-1 overflow-y-auto p-6 space-y-6"
+        encType="multipart/form-data"
+      >
+        {/* GRID PRINCIPAL */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-              <div className="space-y-3">
-                {variants.map((vv) => {
-                  const { combined, existingCount } = getVariantPreviewsCombined(vv);
-                  return (
-                    <div key={vv.uid} className="border p-3 rounded bg-gray-50 relative">
-                      <button type="button" onClick={() => removeVariantByUid(vv.uid)} className="absolute top-2 right-2 text-white bg-red-600 px-2 py-1 rounded hover:bg-red-700 text-xs">Eliminar</button>
+          <input
+            type="text"
+            value={form.name}
+            onChange={(e) => updateFormField("name", e.target.value)}
+            placeholder="Nombre"
+            className="input"
+          />
 
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-2">
-                        <input type="text" placeholder="Color" value={vv.color} onChange={(e) => handleVariantFieldChange(vv.uid, "color", e.target.value)} className="p-2 border rounded" />
-                        <input type="text" placeholder="Talla" value={vv.size || ""} onChange={(e) => handleVariantFieldChange(vv.uid, "size", e.target.value)} className="p-2 border rounded" />
-                        <input type="number" placeholder="Stock" value={vv.stock} onChange={(e) => handleVariantFieldChange(vv.uid, "stock", e.target.value)} className="p-2 border rounded" />
-                        <input type="number" placeholder="Precio (opcional)" value={vv.price || ""} onChange={(e) => handleVariantFieldChange(vv.uid, "price", e.target.value)} className="p-2 border rounded" />
-                        <input type="number" placeholder="Precio de compra (opcional)" value={vv.buyPrice || ""} onChange={(e) => handleVariantFieldChange(vv.uid, "buyPrice", e.target.value)} className="p-2 border rounded" />
-                      </div>
+          <input
+            type="text"
+            value={form.color}
+            onChange={(e) => updateFormField("color", e.target.value)}
+            placeholder="Color"
+            className="input"
+          />
 
-                      {/* file input for variant (note unique key so DOM resets if uid changes) */}
-                      <input key={"variant-file-" + vv.uid} type="file" multiple onChange={(e) => handleVariantImagesChange(vv.uid, e.target.files)} accept="image/*" />
+          <input
+            type="number"
+            value={form.price}
+            onChange={(e) => updateFormField("price", e.target.value)}
+            placeholder="Precio"
+            className="input"
+          />
 
-                      {combined.length > 0 && (
-                        <div className="flex gap-2 mt-2 flex-wrap">
-                          {combined.map((src, i) => {
-                            const isExisting = i < existingCount;
-                            return (
-                              <div key={src + "_" + i} className="relative">
-                                <img src={src} alt={`vprev-${i}`} className="w-20 h-20 object-cover rounded" />
-                                {isExisting ? (
-                                  <button type="button" onClick={() => removeVariantExistingImage(vv.uid, vv.existingImages[i]?.id)} className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs">X</button>
-                                ) : (
-                                  <button type="button" onClick={() => removeVariantNewImage(vv.uid, i - existingCount)} className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs">X</button>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+          <input
+            type="number"
+            value={form.buyPrice}
+            onChange={(e) => updateFormField("buyPrice", e.target.value)}
+            placeholder="Compra"
+            className="input"
+          />
 
-            <div className="flex justify-end gap-2 mt-4">
-              <button type="button" onClick={onClose} className="bg-gray-300 px-3 py-1 rounded">Cancelar</button>
-              <button type="submit" className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Guardar</button>
-            </div>
-          </form>
+          <input
+            type="number"
+            value={form.stock}
+            onChange={(e) => updateFormField("stock", e.target.value)}
+            placeholder="Stock"
+            className="input"
+          />
+
+          <textarea
+            value={form.description}
+            onChange={(e) => updateFormField("description", e.target.value)}
+            placeholder="Descripción"
+            className="input md:col-span-2"
+          />
         </div>
+
+        {/* IMÁGENES PRINCIPALES */}
+        <div>
+          <p className="label">Imágenes</p>
+
+          <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
+            {existingImages.map((img) => (
+              <ImageBox
+                key={img.id}
+                src={img.url}
+                onRemove={() =>
+                  removeExistingMainImage(img.id || img.public_id)
+                }
+              />
+            ))}
+
+            {previewImages.map((src, i) => (
+              <ImageBox
+                key={src}
+                src={src}
+                onRemove={() => removeNewMainImage(i)}
+              />
+            ))}
+          </div>
+
+          <input
+            type="file"
+            multiple
+            onChange={handleMainImagesChange}
+            className="mt-3 text-sm text-white"
+            accept="image/*"
+          />
+        </div>
+
+        {/* VARIANTES */}
+        <div>
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-white font-semibold">Variantes</h3>
+
+            <button
+              type="button"
+              onClick={addVariant}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm"
+            >
+              + Agregar
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {variants.map((vv) => {
+              const { combined, existingCount } =
+                getVariantPreviewsCombined(vv);
+
+              return (
+                <div
+                  key={vv.uid}
+                  className="bg-zinc-800 p-4 rounded-lg space-y-3 relative"
+                >
+                  <button
+                    type="button"
+                    onClick={() => removeVariantByUid(vv.uid)}
+                    className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white text-xs px-2 py-1 rounded"
+                  >
+                    Eliminar
+                  </button>
+
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                    <input
+                      placeholder="Color"
+                      value={vv.color}
+                      onChange={(e) =>
+                        handleVariantFieldChange(
+                          vv.uid,
+                          "color",
+                          e.target.value
+                        )
+                      }
+                      className="input"
+                    />
+
+                    <input
+                      placeholder="Talla"
+                      value={vv.size || ""}
+                      onChange={(e) =>
+                        handleVariantFieldChange(
+                          vv.uid,
+                          "size",
+                          e.target.value
+                        )
+                      }
+                      className="input"
+                    />
+
+                    <input
+                      type="number"
+                      placeholder="Stock"
+                      value={vv.stock}
+                      onChange={(e) =>
+                        handleVariantFieldChange(
+                          vv.uid,
+                          "stock",
+                          e.target.value
+                        )
+                      }
+                      className="input"
+                    />
+
+                    <input
+                      type="number"
+                      placeholder="Precio"
+                      value={vv.price || ""}
+                      onChange={(e) =>
+                        handleVariantFieldChange(
+                          vv.uid,
+                          "price",
+                          e.target.value
+                        )
+                      }
+                      className="input"
+                    />
+
+                    <input
+                      type="number"
+                      placeholder="Compra"
+                      value={vv.buyPrice || ""}
+                      onChange={(e) =>
+                        handleVariantFieldChange(
+                          vv.uid,
+                          "buyPrice",
+                          e.target.value
+                        )
+                      }
+                      className="input"
+                    />
+                  </div>
+
+                  <input
+                    type="file"
+                    multiple
+                    onChange={(e) =>
+                      handleVariantImagesChange(vv.uid, e.target.files)
+                    }
+                    className="text-sm text-white"
+                  />
+
+                  <div className="flex flex-wrap gap-2">
+                    {combined.map((src, i) => {
+                      const isExisting = i < existingCount;
+
+                      return (
+                        <ImageBox
+                          key={src + i}
+                          src={src}
+                          onRemove={() =>
+                            isExisting
+                              ? removeVariantExistingImage(
+                                  vv.uid,
+                                  vv.existingImages[i]?.id
+                                )
+                              : removeVariantNewImage(
+                                  vv.uid,
+                                  i - existingCount
+                                )
+                          }
+                          small
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </form>
+
+      {/* FOOTER */}
+      <div className="border-t border-zinc-700 p-4 flex justify-end gap-3 bg-zinc-900 sticky bottom-0">
+        <button
+          onClick={onClose}
+          className="bg-gray-400 hover:bg-gray-500 px-4 py-2 rounded-md"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
+        >
+          Guardar
+        </button>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default EditProductModal;

@@ -43,11 +43,11 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-black text-white z-50 shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6">
-        <div className="flex justify-between h-12 items-center">
+    <nav className="fixed top-0 left-0 w-full bg-black bg-opacity-75 text-white z-50 shadow-md">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-2">
+        <div className="flex justify-between h-10 items-center">
           {/* Desktop: nombre/email. Móvil: ícono perfil */}
-          <div className="text-2xl font-bold hidden md:block">
+          <div className="text-lg font-normal hidden md:block">
             {user?.name || user?.email || "Inicio"}
           </div>
 
@@ -64,8 +64,8 @@ export default function Navbar() {
           </div>
 
           {/* Menu Desktop */}
-          <div className="hidden text-purple-700 md:flex items-center h-full space-x-2">
-            <Link to="/" className="text-white hover:text-purple-600">
+          <div className="hidden text-purple-700 md:flex items-center h-full space-x-1">
+            <Link to="/" className=" font-normal text-white hover:text-purple-700">
               Inicio
             </Link>
 
@@ -77,24 +77,24 @@ export default function Navbar() {
                   e.stopPropagation();
                   setProductosOpen((s) => !s);
                 }}
-                className="flex text-white items-center space-x-1 hover:text-purple-600 bg-black"
+                className="flex text-white font-normal items-center space-x-1 hover:text-purple-700 bg-black"
               >
                 <span>Productos</span>
-                <ChevronDown size={16} />
+                <ChevronDown size={14} />
               </button>
 
               {productosOpen && (
                 <div className="absolute left-0 mt-2 w-44 bg-black bg-opacity-50 rounded-md shadow-lg py-1 z-50">
                   <Link
                     to="/products"
-                    className="block text-white px-4 py-1 hover:bg-gray-900 hover:text-purple-600"
+                    className="block font-normal text-sm text-white px-2 py-1 hover:bg-gray-900 hover:text-purple-700"
                     onClick={() => setProductosOpen(false)}
                   >
                     Ver Productos
                   </Link>
                   <Link
                     to="/createProd"
-                    className="block text-white px-4 py-1 hover:bg-gray-900 hover:text-purple-600"
+                    className="block font-normal text-sm text-white px-2 py-1 hover:bg-gray-900 hover:text-purple-700"
                     onClick={() => setProductosOpen(false)}
                   >
                     Crear Producto
@@ -111,7 +111,7 @@ export default function Navbar() {
                   e.stopPropagation();
                   setVentasOpen((s) => !s);
                 }}
-                className="flex text-white items-center space-x-1 hover:text-purple-600 bg-black"
+                className="flex text-white  font-normal items-center space-x-1 hover:text-purple-700 bg-black"
               >
                 <span>Ventas</span>
                 <ChevronDown size={16} />
@@ -121,14 +121,14 @@ export default function Navbar() {
                 <div className="absolute left-0 mt-2 w-40 bg-black bg-opacity-50 rounded-md shadow-lg py-1 z-50">
                   <Link
                     to="/sells"
-                    className="block text-white px-2 py-1 hover:bg-gray-900 hover:text-purple-600"
+                    className="block text-sm font-normal text-white px-2 py-1 hover:bg-gray-900 hover:text-purple-700"
                     onClick={() => setVentasOpen(false)}
                   >
                     Ver Ventas
                   </Link>
                   <Link
                     to="/createSell"
-                    className="block text-white px-2 py-1 hover:bg-gray-900 hover:text-purple-600"
+                    className="block text-sm font-normal text-white px-2 py-1 hover:bg-gray-900 hover:text-purple-700"
                     onClick={() => setVentasOpen(false)}
                   >
                     Crear Venta
@@ -137,10 +137,10 @@ export default function Navbar() {
               )}
             </div>
 
-            <Link to="/profile" className="block text-white px-2 py-1 hover:text-purple-600">
+            <Link to="/profile" className="block  font-normal text-white px-2 py-1 hover:text-purple-700">
               Perfil
             </Link>
-            <Link to="/dash" className="block text-white px-2 py-1 hover:text-purple-600">
+            <Link to="/dash" className="block font-normal text-white px-2 py-1 hover:text-purple-700">
               Dashboard
             </Link>
             <LogOutButton />
@@ -151,7 +151,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={toggleMenu}
-              className="focus:outline-none bg-gray-900 bg-opacity-50 p-1 rounded text-purple-600"
+              className="focus:outline-none bg-black bg-opacity-50 p-1 rounded text-purple-500"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -164,7 +164,7 @@ export default function Navbar() {
         <div className="md:hidden bg-black bg-opacity-50 text-white ">
           <Link
             to="/"
-            className="text-center text-white block px-2 py-2 border border-gray-900"
+            className="text-center font-normal text-sm text-white block px-2 py-2 border border-gray-900 hover:bg-gray-900 hover:text-purple-500"
             onClick={() => setIsOpen(false)}
           >
             INICIO
@@ -178,7 +178,8 @@ export default function Navbar() {
     e.stopPropagation();
     setProductosOpen((s) => !s);
   }}
-  className="w-full bg-black px-2 py-2 flex items-center justify-center gap-2 hover:bg-gray-900 hover:text-purple-600 border border-gray-900"
+  className="w-full bg-black font-normal text-sm 
+ px-2 py-1 flex items-center justify-center gap-1 hover:bg-gray-900 hover:text-purple-500 "
 >
   <span>PRODUCTOS</span>
   <ChevronDown size={16} />
@@ -219,8 +220,8 @@ export default function Navbar() {
                 e.stopPropagation();
                 setVentasOpen((s) => !s);
               }}
-             className="w-full bg-black px-2 py-2 flex items-center justify-center gap-2 hover:bg-gray-900 hover:text-purple-600 border border-gray-900"
->
+             className="w-full bg-black font-normal text-sm 
+ px-2 py-1 flex items-center justify-center gap-1 hover:bg-gray-900 hover:text-purple-500  border border-gray-900">
               <span>VENTAS</span>
               <ChevronDown size={16} />
             </button>
@@ -229,23 +230,23 @@ export default function Navbar() {
               <div className="bg-gray-900 bg-opacity-50 z-40">
                 <Link
                   to="/sells"
-                  className="text-gray-300 block px-6 py-2 hover:bg-purple-600"
+                  className="text-gray-300 font-normal block px-6 py-1 hover:bg-gray-800"
                   onClick={() => {
                     setIsOpen(false);
                     setVentasOpen(false);
                   }}
                 >
-                  Ver Ventas
+                  Ver ventas
                 </Link>
                 <Link
                   to="/createSell"
-                  className="text-gray-300 block  py-1 pb-5 hover:bg-purple-600 "
+                  className="text-gray-300 font-normal block  py-1 pb-3 hover:bg-gray-800 "
                   onClick={() => {
                     setIsOpen(false);
                     setVentasOpen(false);
                   }}
                 >
-                  Crear Venta
+                  Crear venta
                 </Link>
               </div>
             )}
@@ -253,7 +254,8 @@ export default function Navbar() {
 
           <Link
             to="/dash"
-            className="text-center text-gray-300 block px-2 py-2 hover:bg-purple-600  border border-gray-900"
+            className="text-right font-normal
+ text-gray-200 block px-2 py-1 hover:bg-gray-900 hover:text-purple-500 border border-gray-900"
             onClick={() => setIsOpen(false)}
           >
             ESTADISTICAS
