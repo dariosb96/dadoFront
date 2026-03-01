@@ -8,86 +8,40 @@ const uidFallback = () =>
 
 const deepClone = (obj) => JSON.parse(JSON.stringify(obj || {}));
 
-// Inyecta CSS crítico una vez — resuelve vh en iOS Safari y scroll en mobile
 const injectModalStyles = () => {
   if (document.getElementById("modal-fix-styles")) return;
   const style = document.createElement("style");
   style.id = "modal-fix-styles";
   style.textContent = `
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      background-color: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+      background-color: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
     .modal-box {
-      background: #18181b;
-      width: 100%;
-      max-width: 64rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
-      display: flex;
-      flex-direction: column;
-      /* Usar dvh cuando esté disponible (iOS 15.4+), caer en svh, luego vh con offset */
-      max-height: 80vh;
-      max-height: 80dvh;
+      width: 100%; max-width: 56rem;
+      display: flex; flex-direction: column;
+      max-height: 82vh; max-height: 82dvh;
       overflow: hidden;
     }
-    .modal-header {
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid #3f3f46;
-      background: #27272a;
-      border-radius: 0.75rem 0.75rem 0 0;
-    }
     .modal-body {
-      flex: 1;
-      /* min-h-0 es CRÍTICO para que overflow-y funcione dentro de flex */
-      min-height: 0;
+      flex: 1; min-height: 0;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
-      padding: 1.5rem;
     }
-    .modal-footer {
-      flex-shrink: 0;
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.75rem;
-      padding: 1rem 1.5rem;
-      border-top: 1px solid #3f3f46;
-      background: #27272a;
-      border-radius: 0 0 0.75rem 0.75rem;
-    }
-    /* Mobile: reducir padding y usar más altura disponible */
     @media (max-width: 640px) {
-      .modal-overlay {
-        padding: 0;
-        align-items: flex-end;
-      }
+      .modal-overlay { padding: 0; align-items: flex-end; }
       .modal-box {
-        max-height: 92vh;
-        max-height: 92dvh;
-        border-radius: 1rem 1rem 0 0;
+        max-height: 93vh; max-height: 93dvh;
         max-width: 100%;
+        border-radius: 1.25rem 1.25rem 0 0 !important;
       }
-      .modal-header {
-        border-radius: 1rem 1rem 0 0;
-      }
-      .modal-footer {
-        border-radius: 0;
-        /* Espacio extra para el home indicator en iPhone */
-        padding-bottom: max(1rem, env(safe-area-inset-bottom));
-      }
+      .modal-header-r { border-radius: 1.25rem 1.25rem 0 0 !important; }
+      .modal-footer-safe { padding-bottom: max(1.25rem, env(safe-area-inset-bottom)) !important; }
     }
   `;
   document.head.appendChild(style);
@@ -126,9 +80,7 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
 
   useEffect(() => {
     return () => {
-      createdObjectUrlsRef.current.forEach((u) => {
-        try { URL.revokeObjectURL(u); } catch (e) {}
-      });
+      createdObjectUrlsRef.current.forEach((u) => { try { URL.revokeObjectURL(u); } catch (e) {} });
       createdObjectUrlsRef.current.clear();
     };
   }, []);
@@ -138,16 +90,12 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
     const productId = product?.id ?? null;
     if (initializedForProductRef.current === productId) return;
     initializedForProductRef.current = productId;
-
     setForm({
       name: product?.name ?? "", price: product?.price ?? "", stock: product?.stock ?? "",
       color: product?.color ?? "", buyPrice: product?.buyPrice ?? "",
       description: product?.description ?? "", newImages: [],
     });
-    previewImages.forEach((u) => {
-      try { URL.revokeObjectURL(u); } catch (e) {}
-      createdObjectUrlsRef.current.delete(u);
-    });
+    previewImages.forEach((u) => { try { URL.revokeObjectURL(u); } catch (e) {} createdObjectUrlsRef.current.delete(u); });
     setPreviewImages([]);
     setImagesToDelete([]);
     setExistingImages(product?.images ? deepClone(product.images) : []);
@@ -257,152 +205,212 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
 
   if (!isOpen) return null;
 
-  const ImageBox = ({ src, onRemove, small }) => (
-    <div style={{ position: "relative", width: small ? 64 : "100%", height: small ? 64 : 96, flexShrink: 0 }}>
-      <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6 }} />
+  /* ── Subcomponentes ─────────────────────────────────────── */
+
+  const Field = ({ label, children }) => (
+    <div className="flex flex-col gap-1">
+      <label className="text-[10px] font-semibold tracking-widest text-zinc-500 uppercase">{label}</label>
+      {children}
+    </div>
+  );
+
+  const inputCls = "w-full bg-transparent border border-zinc-700 hover:border-zinc-500 focus:border-zinc-300 text-white text-sm rounded-lg px-3 py-2 outline-none transition-colors placeholder-zinc-600";
+
+  const ImageThumb = ({ src, onRemove, small }) => (
+    <div className={`group relative flex-shrink-0 rounded-lg overflow-hidden ${small ? "w-16 h-16" : "w-full h-28"}`}>
+      <img src={src} alt="" className="w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors" />
       <button
         type="button"
         onClick={onRemove}
-        style={{
-          position: "absolute", top: 4, right: 4, width: 20, height: 20,
-          background: "#dc2626", border: "none", borderRadius: "50%",
-          color: "white", fontSize: 10, cursor: "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center", padding: 0,
-        }}
-      >✕</button>
+        className="absolute top-1.5 right-1.5 w-5 h-5 flex items-center justify-center bg-black/70 hover:bg-red-600 text-white rounded-full text-[10px] border-none cursor-pointer opacity-0 group-hover:opacity-100 transition-all"
+      >
+        ✕
+      </button>
     </div>
   );
 
   return createPortal(
     <div className="modal-overlay">
-      <div className="modal-box">
+      <div className="modal-box bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl">
 
-        {/* HEADER */}
-        <div className="modal-header">
-          <h2 style={{ color: "white", fontSize: "1.1rem", fontWeight: 600, margin: 0 }}>
-            Editar producto
-          </h2>
+        {/* ── HEADER ─────────────────────────────── */}
+        <div className="modal-header-r flex-shrink-0 flex items-center justify-between px-6 py-4 border-b border-zinc-800/80">
+          <div>
+            <p className="text-[10px] font-semibold tracking-widest text-zinc-500 uppercase mb-0.5">Producto</p>
+            <h2 className="text-white text-base font-semibold m-0 leading-none">Editar</h2>
+          </div>
           <button
             onClick={onClose}
-            style={{
-              width: 32, height: 32, borderRadius: "50%", background: "#dc2626",
-              border: "none", color: "white", cursor: "pointer", fontSize: 14,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              flexShrink: 0, padding: 0,
-            }}
-          >✕</button>
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white border-none cursor-pointer text-sm transition-colors p-0 flex-shrink-0"
+          >
+            ✕
+          </button>
         </div>
 
-        {/* BODY — este div es el que scrollea */}
-        <form
-          onSubmit={handleSubmit}
-          className="modal-body"
-          encType="multipart/form-data"
-        >
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+        {/* ── BODY ───────────────────────────────── */}
+        <form onSubmit={handleSubmit} className="modal-body px-6 py-5" encType="multipart/form-data">
+          <div className="flex flex-col gap-7">
 
-            {/* CAMPOS PRINCIPALES */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-              <input type="text" value={form.name} onChange={(e) => updateFormField("name", e.target.value)} placeholder="Nombre" className="input" />
-              <input type="text" value={form.color} onChange={(e) => updateFormField("color", e.target.value)} placeholder="Color" className="input" />
-              <input type="number" value={form.price} onChange={(e) => updateFormField("price", e.target.value)} placeholder="Precio" className="input" />
-              <input type="number" value={form.buyPrice} onChange={(e) => updateFormField("buyPrice", e.target.value)} placeholder="Compra" className="input" />
-              <input type="number" value={form.stock} onChange={(e) => updateFormField("stock", e.target.value)} placeholder="Stock" className="input" />
-              <textarea value={form.description} onChange={(e) => updateFormField("description", e.target.value)} placeholder="Descripción" className="input md:col-span-2" />
-            </div>
-
-            {/* IMÁGENES PRINCIPALES */}
-            <div>
-              <p className="label">Imágenes</p>
-              <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
-                {existingImages.map((img) => (
-                  <ImageBox key={img.id} src={img.url} onRemove={() => removeExistingMainImage(img.id || img.public_id)} />
-                ))}
-                {previewImages.map((src, i) => (
-                  <ImageBox key={src} src={src} onRemove={() => removeNewMainImage(i)} />
-                ))}
+            {/* Campos principales */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <Field label="Nombre">
+                <input type="text" value={form.name} onChange={(e) => updateFormField("name", e.target.value)} placeholder="—" className={inputCls} />
+              </Field>
+              <Field label="Color">
+                <input type="text" value={form.color} onChange={(e) => updateFormField("color", e.target.value)} placeholder="—" className={inputCls} />
+              </Field>
+              <Field label="Precio venta">
+                <input type="number" value={form.price} onChange={(e) => updateFormField("price", e.target.value)} placeholder="0.00" className={inputCls} />
+              </Field>
+              <Field label="Precio compra">
+                <input type="number" value={form.buyPrice} onChange={(e) => updateFormField("buyPrice", e.target.value)} placeholder="0.00" className={inputCls} />
+              </Field>
+              <Field label="Stock">
+                <input type="number" value={form.stock} onChange={(e) => updateFormField("stock", e.target.value)} placeholder="0" className={inputCls} />
+              </Field>
+              <div className="col-span-2 md:col-span-3">
+                <Field label="Descripción">
+                  <textarea value={form.description} onChange={(e) => updateFormField("description", e.target.value)} placeholder="—" rows={2} className={`${inputCls} resize-none`} />
+                </Field>
               </div>
-              <input type="file" multiple onChange={handleMainImagesChange} className="mt-3 text-sm text-white" accept="image/*" />
             </div>
 
-            {/* VARIANTES */}
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-                <h3 style={{ color: "white", fontWeight: 600, margin: 0 }}>Variantes</h3>
-                <button type="button" onClick={addVariant} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm">
-                  + Agregar
+            {/* Separador */}
+            <div className="border-t border-zinc-800" />
+
+            {/* Imágenes principales */}
+            <div className="flex flex-col gap-3">
+              <p className="text-[10px] font-semibold tracking-widest text-zinc-500 uppercase">Imágenes del producto</p>
+              {(existingImages.length > 0 || previewImages.length > 0) && (
+                <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
+                  {existingImages.map((img) => (
+                    <ImageThumb key={img.id} src={img.url} onRemove={() => removeExistingMainImage(img.id || img.public_id)} />
+                  ))}
+                  {previewImages.map((src, i) => (
+                    <ImageThumb key={src} src={src} onRemove={() => removeNewMainImage(i)} />
+                  ))}
+                </div>
+              )}
+              <label className="inline-flex items-center gap-2 text-xs text-zinc-400 hover:text-white cursor-pointer transition-colors w-fit">
+                <span className="w-7 h-7 flex items-center justify-center rounded-lg border border-dashed border-zinc-700 hover:border-zinc-400 text-lg transition-colors">+</span>
+                <span>Añadir imágenes</span>
+                <input type="file" multiple accept="image/*" onChange={handleMainImagesChange} className="hidden" />
+              </label>
+            </div>
+
+            {/* Separador */}
+            <div className="border-t border-zinc-800" />
+
+            {/* Variantes */}
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-semibold tracking-widest text-zinc-500 uppercase">Variantes</p>
+                <button
+                  type="button" onClick={addVariant}
+                  className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-500 px-3 py-1.5 rounded-lg bg-transparent cursor-pointer transition-colors"
+                >
+                  <span className="text-base leading-none">+</span> Nueva variante
                 </button>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                {variants.map((vv) => {
+              {variants.length === 0 && (
+                <p className="text-xs text-zinc-600 text-center py-4">Sin variantes — pulsa "+ Nueva variante" para agregar</p>
+              )}
+
+              <div className="flex flex-col gap-3">
+                {variants.map((vv, index) => {
                   const { combined, existingCount } = getVariantPreviewsCombined(vv);
                   return (
-                    <div key={vv.uid} style={{ background: "#3f3f46", padding: "1rem", borderRadius: "0.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span style={{ color: "#a1a1aa", fontSize: "0.7rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                          Variante
-                        </span>
+                    <div key={vv.uid} className="border border-zinc-800 rounded-xl p-4 flex flex-col gap-4 bg-zinc-900/50">
+
+                      {/* Cabecera variante */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-zinc-400 font-medium">Variante {index + 1}</span>
                         <button
-                          type="button"
-                          onClick={() => removeVariantByUid(vv.uid)}
-                          style={{ background: "#dc2626", border: "none", color: "white", fontSize: "0.75rem", padding: "0.25rem 0.5rem", borderRadius: 4, cursor: "pointer" }}
+                          type="button" onClick={() => removeVariantByUid(vv.uid)}
+                          className="text-[10px] text-zinc-500 hover:text-red-400 uppercase tracking-widest font-semibold border-none bg-transparent cursor-pointer transition-colors p-0"
                         >
                           Eliminar
                         </button>
                       </div>
 
+                      {/* Campos */}
                       <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-                        <input placeholder="Color" value={vv.color} onChange={(e) => updateVariantByUid(vv.uid, (v) => ({ ...v, color: e.target.value }))} className="input" />
-                        <input placeholder="Talla" value={vv.size || ""} onChange={(e) => updateVariantByUid(vv.uid, (v) => ({ ...v, size: e.target.value }))} className="input" />
-                        <input type="number" placeholder="Stock" value={vv.stock} onChange={(e) => updateVariantByUid(vv.uid, (v) => ({ ...v, stock: e.target.value }))} className="input" />
-                        <input type="number" placeholder="Precio" value={vv.price || ""} onChange={(e) => updateVariantByUid(vv.uid, (v) => ({ ...v, price: e.target.value }))} className="input" />
-                        <input type="number" placeholder="Compra" value={vv.buyPrice || ""} onChange={(e) => updateVariantByUid(vv.uid, (v) => ({ ...v, buyPrice: e.target.value }))} className="input" />
+                        <Field label="Color">
+                          <input placeholder="—" value={vv.color} onChange={(e) => updateVariantByUid(vv.uid, (v) => ({ ...v, color: e.target.value }))} className={inputCls} />
+                        </Field>
+                        <Field label="Talla">
+                          <input placeholder="—" value={vv.size || ""} onChange={(e) => updateVariantByUid(vv.uid, (v) => ({ ...v, size: e.target.value }))} className={inputCls} />
+                        </Field>
+                        <Field label="Stock">
+                          <input type="number" placeholder="0" value={vv.stock} onChange={(e) => updateVariantByUid(vv.uid, (v) => ({ ...v, stock: e.target.value }))} className={inputCls} />
+                        </Field>
+                        <Field label="Precio">
+                          <input type="number" placeholder="0.00" value={vv.price || ""} onChange={(e) => updateVariantByUid(vv.uid, (v) => ({ ...v, price: e.target.value }))} className={inputCls} />
+                        </Field>
+                        <Field label="Compra">
+                          <input type="number" placeholder="0.00" value={vv.buyPrice || ""} onChange={(e) => updateVariantByUid(vv.uid, (v) => ({ ...v, buyPrice: e.target.value }))} className={inputCls} />
+                        </Field>
                       </div>
 
-                      <input type="file" multiple onChange={(e) => handleVariantImagesChange(vv.uid, e.target.files)} className="text-sm text-white" />
+                      {/* Imágenes variante */}
+                      <div className="flex flex-col gap-2">
+                        {combined.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {combined.map((src, i) => {
+                              const isExisting = i < existingCount;
+                              return (
+                                <ImageThumb
+                                  key={src + i} src={src} small
+                                  onRemove={() =>
+                                    isExisting
+                                      ? removeVariantExistingImage(vv.uid, vv.existingImages[i]?.id)
+                                      : removeVariantNewImage(vv.uid, i - existingCount)
+                                  }
+                                />
+                              );
+                            })}
+                          </div>
+                        )}
+                        <label className="inline-flex items-center gap-2 text-xs text-zinc-500 hover:text-zinc-300 cursor-pointer transition-colors w-fit">
+                          <span className="w-6 h-6 flex items-center justify-center rounded-md border border-dashed border-zinc-700 hover:border-zinc-500 text-base leading-none transition-colors">+</span>
+                          <span>Añadir imágenes</span>
+                          <input type="file" multiple onChange={(e) => handleVariantImagesChange(vv.uid, e.target.files)} className="hidden" />
+                        </label>
+                      </div>
 
-                      {combined.length > 0 && (
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                          {combined.map((src, i) => {
-                            const isExisting = i < existingCount;
-                            return (
-                              <ImageBox
-                                key={src + i}
-                                src={src}
-                                small
-                                onRemove={() =>
-                                  isExisting
-                                    ? removeVariantExistingImage(vv.uid, vv.existingImages[i]?.id)
-                                    : removeVariantNewImage(vv.uid, i - existingCount)
-                                }
-                              />
-                            );
-                          })}
-                        </div>
-                      )}
                     </div>
                   );
                 })}
               </div>
             </div>
 
+            {/* Espaciado final para que el último elemento no quede pegado al footer */}
+            <div className="h-1" />
           </div>
         </form>
 
-        {/* FOOTER */}
-        <div className="modal-footer">
-          <button onClick={onClose} style={{ background: "#9ca3af", border: "none", padding: "0.5rem 1rem", borderRadius: 6, cursor: "pointer" }}>
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            style={{ background: "#16a34a", border: "none", color: "white", padding: "0.5rem 1rem", borderRadius: 6, cursor: "pointer" }}
-          >
-            Guardar
-          </button>
+        {/* ── FOOTER ─────────────────────────────── */}
+        <div className="modal-footer-safe flex-shrink-0 flex items-center justify-between px-6 py-4 border-t border-zinc-800/80">
+          <span className="text-xs text-zinc-600">{variants.length} variante{variants.length !== 1 ? "s" : ""}</span>
+          <div className="flex gap-2">
+            <button
+              onClick={onClose}
+              className="text-sm text-zinc-400 hover:text-white px-4 py-2 rounded-lg border border-zinc-700 hover:border-zinc-500 bg-transparent cursor-pointer transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className="text-sm text-white px-5 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/20 cursor-pointer transition-colors font-medium"
+            >
+              Guardar cambios
+            </button>
+          </div>
         </div>
+
       </div>
     </div>,
     document.body
