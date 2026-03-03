@@ -23,7 +23,7 @@ export default function CatalogList() {
 
   return (
       
-    <div className="text-black bg-black bg-opacity-75 py-2 px-6 text-white rounded-xl">
+    <div className="text-black  bg-opacity-75 py-2 px-6 text-white rounded-xl">
      
       <span className="text-2xl font-semibold "> Catálogos públicos</span>
       <div className="max-w-4xl mx-auto grid gap-3 md:grid-cols-3 lg:grid-cols-4 py-2 pt-5 sm:grid-cols-2">
