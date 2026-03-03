@@ -73,9 +73,9 @@ const AllProductsPage = () => {
           </Link>
         </div>
 
-        <h1 className="text-2xl font-bold mb-4 text-white">Todos los productos</h1>
+        <h1 className=" sm:text-sm md:text-lg text-lg font-semibold mb-4 text-white">Todos los productos</h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-black">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-black">
           {products?.map((product) => (
             <ProductCard
               key={product.id}

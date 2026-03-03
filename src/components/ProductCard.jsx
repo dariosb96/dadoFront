@@ -21,16 +21,16 @@ const ImageCarousel = ({ images }) => {
 
   return (
     <div className="w-full">
-      <div className="w-full h-32 bg-gray-900 rounded-md overflow-hidden">
+      <div className="w-full h-16 bg-gray-900 rounded-md overflow-hidden">
         <img
           src={images[currentIndex].url}
           alt={`imagen-${currentIndex}`}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover lg:h-38 sm:h"
         />
       </div>
 
       {images.length > 1 && (
-        <div className="flex justify-center gap-3 mt-1">
+        <div className="flex justify-center gap-16 mt-1">
           <button
             onClick={prevImage}
             className="bg-purple-800 hover:bg-purple-600 text-white p-1 rounded-md"

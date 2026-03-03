@@ -6,13 +6,15 @@ export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 export const LOGOUT = 'LOGOUT';
 
 export const LoginUser = (credentials, rememberMe) => async (dispatch) => {
+
+
+
   try {
     dispatch({ type: LOGIN_REQUEST });
 
     const { data } = await api.post("/user/login", credentials);
 
     const storage = rememberMe ? localStorage : sessionStorage;
-
     storage.setItem("token", data.token);
     storage.setItem("user", JSON.stringify(data.userdata));
 
@@ -21,18 +23,18 @@ export const LoginUser = (credentials, rememberMe) => async (dispatch) => {
       payload: { token: data.token, user: data.userdata },
     });
   } catch (error) {
+    // Limpiar storage para que Protected_Route (si alguien llega directo)
+    // tampoco encuentre un token viejo inválido
+
     dispatch({
       type: LOGIN_FAILURE,
-      payload:
-        error.response?.data?.message ||
-        error.message,
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
 
-
 export const logout = () => (dispatch) => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    dispatch({ type: LOGOUT });
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  dispatch({ type: LOGOUT });
 };

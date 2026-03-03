@@ -23,13 +23,18 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
 
-      store.dispatch({ type: LOGOUT });
+      const token = localStorage.getItem("token");
 
+      // SOLO cerrar sesión si realmente había token
+      if (token) {
+        store.dispatch({ type: LOGOUT });
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      // ❌ NO redirigir aquí
+      // ❌ NO usar window.location.href
 
-      window.location.href = "/";
     }
 
     return Promise.reject(error);
