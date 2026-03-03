@@ -3,6 +3,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import { useSelector, useDispatch } from "react-redux";
 import { getCategories } from "../Redux/actions/Products/get_categories";
 import { exportCatalogPDF } from "../Redux/actions/Products/export_pdf";
+import { Link2, FileDown, Copy, ExternalLink, QrCode, X, Check, Tag } from "lucide-react";
 
 const MyCatalogLink = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -16,205 +17,329 @@ const MyCatalogLink = ({ onClose }) => {
   const [includeBusinessName, setIncludeBusinessName] = React.useState(true);
   const [includeOwnerName, setIncludeOwnerName] = React.useState(true);
   const [includePhone, setIncludePhone] = React.useState(true);
+  const [copied, setCopied] = React.useState(false);
 
   useEffect(() => {
     if (user?.id) dispatch(getCategories(user.id));
   }, [user, dispatch]);
 
   useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") onClose?.();
-    };
+    const onKey = (e) => { if (e.key === "Escape") onClose?.(); };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  if (!user) {
-    return <div className="p-6 text-center text-gray-400">Cargando datos...</div>;
-  }
+  if (!user) return (
+    <div style={{ padding: 40, textAlign: 'center', color: '#6b7280', fontSize: 14 }}>
+      Cargando...
+    </div>
+  );
 
   const baseUrl = `${window.location.origin}/catalog/${user.id}`;
   const linkParams = new URLSearchParams();
   if (selectedCategory) linkParams.append("category", selectedCategory);
   if (showBusinessOnLink) linkParams.append("showBusiness", "1");
   if (showPhoneOnLink) linkParams.append("showPhone", "1");
-  const catalogUrl = linkParams.toString() ? `${baseUrl}?${linkParams.toString()}` : baseUrl;
+  const catalogUrl = linkParams.toString() ? `${baseUrl}?${linkParams}` : baseUrl;
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(catalogUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleDownloadPDF = () => {
-    dispatch(
-      exportCatalogPDF(user.id, {
-        includeBusinessName,
-        includeOwnerName,
-        includePhone,
-        selectedCategories: selectedCategory ? [selectedCategory] : [],
-      })
-    );
+    dispatch(exportCatalogPDF(user.id, {
+      includeBusinessName, includeOwnerName, includePhone,
+      selectedCategories: selectedCategory ? [selectedCategory] : [],
+    }));
   };
+
+  const Toggle = ({ checked, onChange, label }) => (
+    <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', userSelect: 'none' }}>
+      <div
+        onClick={onChange}
+        style={{
+          width: 36, height: 20, borderRadius: 999, flexShrink: 0,
+          background: checked ? '#7c3aed' : 'rgba(255,255,255,0.08)',
+          border: checked ? '1px solid #9333ea' : '1px solid rgba(255,255,255,0.1)',
+          position: 'relative', transition: 'all 0.2s', cursor: 'pointer',
+        }}
+      >
+        <div style={{
+          position: 'absolute', top: 2, left: checked ? 18 : 2,
+          width: 14, height: 14, borderRadius: '50%',
+          background: checked ? '#fff' : 'rgba(255,255,255,0.3)',
+          transition: 'all 0.2s',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
+        }} />
+      </div>
+      <span style={{ fontSize: 13, color: '#9ca3af' }}>{label}</span>
+    </label>
+  );
 
   return (
     <div
-      className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      style={{
+        position: 'fixed', inset: 0, zIndex: 1000,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 16,
+        background: 'rgba(0,0,0,0.7)',
+        backdropFilter: 'blur(8px)',
+      }}
       onClick={onClose}
-      role="presentation"
     >
-         <div
-        /* Contenedor del modal: force LTR y anula transform */
+      <div
         dir="ltr"
-        className="relative w-full max-w-2xl bg-gradient-to-b from-gray-900 to-black rounded-2xl shadow-2xl border border-gray-800 overflow-hidden max-h-[85vh]"
-        onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        style={{ transform: "none" }} // anula transform de animaciones
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          position: 'relative', width: '100%', maxWidth: 520,
+          maxHeight: '88vh', display: 'flex', flexDirection: 'column',
+          background: '#0c0c0c',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderRadius: 20,
+          boxShadow: '0 0 0 1px rgba(124,58,237,0.1), 0 32px 64px rgba(0,0,0,0.7)',
+          overflow: 'hidden',
+          fontFamily: 'Inter, sans-serif',
+        }}
       >
-        {/* BOTÓN CERRAR: absolute + estilo inline que fuerza right y deja left 'auto' */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose?.();
-          }}
-          className="absolute top-3 z-50 flex items-center justify-center w-7 h-6 rounded-full bg-red-600 hover:bg-red-500 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-red-400"
-          aria-label="Cerrar"
-          style={{ right: "0.75rem", left: "auto" }} // <- fuerza a la derecha
-        > 
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4">
-            <path fill="currentColor" d="M6.225 4.811a1 1 0 10-1.414 1.414L10.586 12l-5.775 5.775a1 1 0 101.414 1.414L12 13.414l5.775 5.775a1 1 0 001.414-1.414L13.414 12l5.775-5.775a1 1 0 00-1.414-1.414L12 10.586 6.225 4.811z"/>
-          </svg>
-        </button>
+        {/* Franja top */}
+        <div style={{ height: 3, background: 'linear-gradient(90deg,#7c3aed,#a855f7,#7c3aed)', flexShrink: 0 }} />
 
-
-        <div className="p-6 border-b border-gray-800 text-center">
-          <h3 className="text-white text-xl font-semibold tracking-wide">Tu catálogo público</h3>
-        </div>
-
-        <div className="flex gap-2 px-4 pt-4">
+        {/* Header */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '16px 20px',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          flexShrink: 0,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: 8, flexShrink: 0,
+              background: 'rgba(124,58,237,0.12)',
+              border: '1px solid rgba(124,58,237,0.25)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Link2 size={14} style={{ color: '#a78bfa' }} />
+            </div>
+            <div>
+              <p style={{ fontSize: 14, fontWeight: 600, color: '#f3f4f6', margin: 0 }}>
+                Tu catálogo público
+              </p>
+              <p style={{ fontSize: 11, color: '#6b7280', margin: '1px 0 0' }}>
+                {user?.businessName}
+              </p>
+            </div>
+          </div>
           <button
             type="button"
-            onClick={() => setTab("link")}
-            className={`flex-1 py-2 rounded-md font-medium transition-all ${
-              tab === "link" ? "bg-purple-700 text-white shadow" : "bg-gray-900 text-gray-300 hover:bg-gray-800"
-            }`}
+            onClick={onClose}
+            style={{
+              width: 28, height: 28, borderRadius: 8, flexShrink: 0,
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#6b7280', cursor: 'pointer',
+            }}
           >
-            Enlace público
-          </button>
-          <button
-            type="button"
-            onClick={() => setTab("pdf")}
-            className={`flex-1 py-2 rounded-md font-medium transition-all ${
-              tab === "pdf" ? "bg-purple-700 text-white shadow" : "bg-gray-900 text-gray-300 hover:bg-gray-800"
-            }`}
-          >
-            Descargar PDF
+            <X size={13} />
           </button>
         </div>
 
-        <div className="px-6 py-6 overflow-auto max-h-[calc(85vh-140px)] space-y-6">
-          <div>
-            <label className="block text-sm text-gray-400 pb-2">Filtrar por categoría</label>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full bg-gray-900 text-white border border-purple-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        {/* Tabs */}
+        <div style={{
+          display: 'flex', gap: 6, padding: '12px 20px',
+          borderBottom: '1px solid rgba(255,255,255,0.05)',
+          flexShrink: 0,
+        }}>
+          {[
+            { id: 'link', label: 'Enlace público', icon: Link2 },
+            { id: 'pdf',  label: 'Descargar PDF',  icon: FileDown },
+          ].map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setTab(id)}
+              style={{
+                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                gap: 6, padding: '8px 12px', borderRadius: 10, border: 'none',
+                cursor: 'pointer', fontSize: 12, fontWeight: 500,
+                transition: 'all 0.15s',
+                background: tab === id ? 'rgba(124,58,237,0.15)' : 'rgba(255,255,255,0.03)',
+                color: tab === id ? '#c4b5fd' : '#6b7280',
+                boxShadow: tab === id ? 'inset 0 0 0 1px rgba(124,58,237,0.3)' : 'inset 0 0 0 1px rgba(255,255,255,0.06)',
+              }}
             >
-              <option value="">Catálogo general</option>
-              {categories?.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
+              <Icon size={13} />
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Scroll body */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+          {/* Filtro categoría */}
+          <div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#6b7280', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
+              <Tag size={11} /> Filtrar categoría
+            </label>
+            <div style={{ position: 'relative' }}>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                style={{
+                  width: '100%', appearance: 'none',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 10, padding: '10px 36px 10px 14px',
+                  color: '#d1d5db', fontSize: 13, cursor: 'pointer',
+                  outline: 'none',
+                }}
+              >
+                <option value="" style={{ background: '#1c1c1e' }}>Todas las categorías</option>
+                {categories?.map((cat) => (
+                  <option key={cat.id} value={cat.id} style={{ background: '#1c1c1e' }}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+              <div style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: '#6b7280' }}>
+                ▾
+              </div>
+            </div>
           </div>
 
-          {tab === "link" && (
-            <div className="space-y-5">
-              <div className="flex flex-col gap-4">
-                <label className="flex items-center gap-3 text-gray-300">
-                  <input
-                    type="checkbox"
-                    checked={showBusinessOnLink}
-                    onChange={() => setShowBusinessOnLink(!showBusinessOnLink)}
-                    className="w-4 h-4"
-                  />
-                  Mostrar nombre del negocio
-                </label>
-                <label className="flex items-center gap-3 text-gray-300">
-                  <input
-                    type="checkbox"
-                    checked={showPhoneOnLink}
-                    onChange={() => setShowPhoneOnLink(!showPhoneOnLink)}
-                    className="w-4 h-4"
-                  />
-                  Mostrar teléfono
-                </label>
+          {/* TAB: ENLACE */}
+          {tab === 'link' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+              {/* Opciones toggle */}
+              <div style={{
+                background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: 12, padding: '14px 16px',
+                display: 'flex', flexDirection: 'column', gap: 12,
+              }}>
+                <p style={{ fontSize: 11, color: '#6b7280', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', margin: 0 }}>
+                  Opciones visibles
+                </p>
+                <Toggle checked={showBusinessOnLink} onChange={() => setShowBusinessOnLink(!showBusinessOnLink)} label="Nombre del negocio" />
+                <Toggle checked={showPhoneOnLink} onChange={() => setShowPhoneOnLink(!showPhoneOnLink)} label="Teléfono de contacto" />
               </div>
 
+              {/* URL */}
               <div>
-                <p className="text-gray-400 text-sm mb-2">Enlace público:</p>
-                <a
-                  href={catalogUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="block text-blue-400 underline break-words hover:text-blue-300"
-                >
-                  {catalogUrl}
-                </a>
+                <p style={{ fontSize: 11, color: '#6b7280', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
+                  Enlace generado
+                </p>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 0,
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 12, overflow: 'hidden',
+                }}>
+                  <a
+                    href={catalogUrl} target="_blank" rel="noreferrer"
+                    style={{
+                      flex: 1, padding: '10px 14px',
+                      fontSize: 12, color: '#818cf8',
+                      wordBreak: 'break-all', lineHeight: 1.5,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    {catalogUrl}
+                  </a>
+                  <a
+                    href={catalogUrl} target="_blank" rel="noreferrer"
+                    style={{
+                      padding: '10px 12px', color: '#6b7280',
+                      borderLeft: '1px solid rgba(255,255,255,0.06)',
+                      display: 'flex', alignItems: 'center',
+                    }}
+                  >
+                    <ExternalLink size={13} />
+                  </a>
+                </div>
+
                 <button
                   type="button"
-                  onClick={() => navigator.clipboard.writeText(catalogUrl)}
-                  className="mt-3 bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-600 shadow"
+                  onClick={handleCopy}
+                  style={{
+                    marginTop: 10, display: 'flex', alignItems: 'center', gap: 6,
+                    background: copied ? 'rgba(34,197,94,0.12)' : 'rgba(124,58,237,0.12)',
+                    border: `1px solid ${copied ? 'rgba(34,197,94,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                    borderRadius: 10, padding: '8px 16px',
+                    color: copied ? '#4ade80' : '#c4b5fd',
+                    fontSize: 12, fontWeight: 500, cursor: 'pointer',
+                    transition: 'all 0.2s',
+                  }}
                 >
-                  Copiar enlace
+                  {copied ? <Check size={13} /> : <Copy size={13} />}
+                  {copied ? 'Copiado' : 'Copiar enlace'}
                 </button>
               </div>
 
-              <div className="bg-white p-4 rounded-lg text-center w-fit mx-auto shadow">
-                <QRCodeCanvas value={catalogUrl} size={160} />
-                <p className="text-sm text-gray-700 mt-2">Escanea para abrir el catálogo</p>
+              {/* QR */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+                <div style={{
+                  background: '#fff', borderRadius: 16,
+                  padding: 16,
+                  boxShadow: '0 0 0 1px rgba(124,58,237,0.15), 0 8px 24px rgba(0,0,0,0.4)',
+                }}>
+                  <QRCodeCanvas value={catalogUrl} size={140} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#6b7280', fontSize: 11 }}>
+                  <QrCode size={11} />
+                  Escanea para abrir el catálogo
+                </div>
               </div>
+
             </div>
           )}
 
-          {tab === "pdf" && (
-            <div className="space-y-5">
-              <div className="flex flex-col gap-4">
-                <label className="flex items-center gap-3 text-gray-300">
-                  <input
-                    type="checkbox"
-                    checked={includeBusinessName}
-                    onChange={() => setIncludeBusinessName(!includeBusinessName)}
-                    className="w-4 h-4"
-                  />
-                  Incluir nombre del negocio
-                </label>
-                <label className="flex items-center gap-3 text-gray-300">
-                  <input
-                    type="checkbox"
-                    checked={includeOwnerName}
-                    onChange={() => setIncludeOwnerName(!includeOwnerName)}
-                    className="w-4 h-4"
-                  />
-                  Incluir nombre del propietario
-                </label>
-                <label className="flex items-center gap-3 text-gray-300">
-                  <input
-                    type="checkbox"
-                    checked={includePhone}
-                    onChange={() => setIncludePhone(!includePhone)}
-                    className="w-4 h-4"
-                  />
-                  Incluir teléfono
-                </label>
+          {/* TAB: PDF */}
+          {tab === 'pdf' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+              <div style={{
+                background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: 12, padding: '14px 16px',
+                display: 'flex', flexDirection: 'column', gap: 12,
+              }}>
+                <p style={{ fontSize: 11, color: '#6b7280', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', margin: 0 }}>
+                  Información a incluir
+                </p>
+                <Toggle checked={includeBusinessName} onChange={() => setIncludeBusinessName(!includeBusinessName)} label="Nombre del negocio" />
+                <Toggle checked={includeOwnerName}   onChange={() => setIncludeOwnerName(!includeOwnerName)}   label="Nombre del propietario" />
+                <Toggle checked={includePhone}        onChange={() => setIncludePhone(!includePhone)}            label="Teléfono de contacto" />
               </div>
 
               <button
                 type="button"
                 onClick={handleDownloadPDF}
-                className="w-full bg-purple-700 text-white px-5 py-3 rounded-xl hover:bg-purple-600 shadow-lg text-lg font-medium transition-all"
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  gap: 8, padding: '13px 0', borderRadius: 12, border: 'none',
+                  background: 'linear-gradient(135deg,#7c3aed,#9333ea)',
+                  color: '#fff', fontSize: 14, fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 20px rgba(124,58,237,0.35)',
+                  transition: 'opacity 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
+                onMouseLeave={e => e.currentTarget.style.opacity = '1'}
               >
+                <FileDown size={16} />
                 Descargar PDF
               </button>
+
             </div>
           )}
+
         </div>
       </div>
     </div>
