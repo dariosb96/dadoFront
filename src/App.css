@@ -8,7 +8,7 @@ body {
   min-height: 100vh;
   /* REMOVIDO: display:flex y place-items:center — rompen el scroll en mobile
      y crean conflictos con modales fixed */
-  background: url("./assets/black.avif") no-repeat center center fixed;
+  background: url("./assets/wallpapper.png") no-repeat center center fixed;
   background-size: cover;
 }
 
