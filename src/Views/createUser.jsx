@@ -72,25 +72,38 @@ const CreateUser = () => {
   };
 
   const inputStyle =
-    "flex-1 h-9 bg-gray-900 rounded-xl px-4 text-sm text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600";
+    "flex-1 h-10 bg-white/5 border border-white/10 rounded-xl px-4 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600";
 
   const iconStyle = "w-5 h-5 text-gray-400";
 
   return (
-    <div className="bg-black min-h-screen flex justify-center px-4 py-8">
-      <div className="w-full max-w-md sm:max-w-xl lg:max-w-4xl bg-gray-950 border border-gray-800 rounded-2xl shadow-2xl px-6 lg:px-10 py-8">
+    <div className="relative min-h-screen bg-black flex justify-center items-center px-4 py-10 overflow-hidden">
+
+      {/* GRADIENTE SUPERIOR */}
+      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-purple-900/20 to-transparent blur-3xl pointer-events-none" />
+
+      {/* GRADIENTE INFERIOR */}
+      <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-purple-900/20 to-transparent blur-3xl pointer-events-none" />
+
+      {/* CARD */}
+      <div className="relative w-full max-w-md sm:max-w-xl lg:max-w-4xl 
+        bg-white/5 backdrop-blur-md 
+        border border-white/10 
+        rounded-2xl 
+        shadow-2xl 
+        px-6 lg:px-10 py-8">
 
         {/* HEADER */}
         <div className="flex justify-between items-center mb-6">
           <Link
             to="/"
-            className="flex items-center gap-2 text-gray-400 hover:text-white text-sm"
+            className="flex items-center gap-2 text-gray-400 hover:text-white text-sm transition"
           >
             <ArrowLeft size={16} />
             Volver
           </Link>
 
-          <img src={logo} alt="logo" className="w-6  lg:w-10" />
+          <img src={logo} alt="logo" className="w-6 lg:w-10" />
         </div>
 
         <h1 className="text-2xl md:text-3xl font-semibold text-white text-center lg:text-left mb-6">
@@ -109,19 +122,21 @@ const CreateUser = () => {
           {/* AVATAR */}
           <div className="flex flex-col items-center lg:items-start">
 
-           <div
-  className={`relative transition-all duration-300
-  ${preview
-      ? "w-24 h-24 lg:w-32 lg:h-32"
-      : "w-28 h-28 lg:w-40 lg:h-40"
-  }`}
->
-
+            <div
+              className={`relative transition-all duration-300
+              ${preview
+                ? "w-24 h-24 lg:w-32 lg:h-32"
+                : "w-28 h-28 lg:w-40 lg:h-40"
+              }`}
+            >
 
               {/* IMAGEN */}
               <div
                 onClick={() => fileInputRef.current.click()}
-                className="w-full h-full rounded-full bg-gray-900 border border-gray-700 overflow-hidden cursor-pointer"
+                className="w-full h-full rounded-full 
+                bg-black/40 border border-white/10 
+                overflow-hidden cursor-pointer 
+                hover:border-purple-500/40 transition"
               >
                 {preview ? (
                   <img
@@ -233,7 +248,10 @@ const CreateUser = () => {
           {/* BOTÓN */}
           <button
             type="submit"
-            className="lg:col-span-2 w-full h-11 bg-purple-700 hover:bg-purple-800 rounded-xl text-sm font-medium transition mt-2"
+            className="lg:col-span-2 w-full h-11 
+            bg-purple-700 hover:bg-purple-800 
+            rounded-xl text-sm font-medium 
+            transition mt-2"
           >
             Crear cuenta
           </button>
