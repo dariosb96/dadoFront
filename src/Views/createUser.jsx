@@ -72,26 +72,19 @@ const CreateUser = () => {
   };
 
   const inputStyle =
-    "flex-1 h-10 bg-gray-900 border border-gray-800 rounded-xl px-4 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600";
+    "flex-1 h-10  rounded-xl px-4 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600 bg-black bg-opacity-25";
 
   const iconStyle = "w-5 h-5 text-gray-400";
 
   return (
     <div className="relative min-h-screen  flex justify-center items-center px-4 py-4 overflow-hidden">
 
-      {/* GRADIENTE SUPERIOR */}
-      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-purple-900/20 to-transparent blur-3xl pointer-events-none" />
 
-      {/* GRADIENTE INFERIOR */}
-      <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-purple-900/20 to-transparent blur-3xl pointer-events-none" />
 
       {/* CARD */}
-      <div className="relative w-full max-w-md sm:max-w-xl lg:max-w-4xl 
-        bg-white/5 backdrop-blur-md 
-        border border-white/10 
-        rounded-2xl 
+      <div className="relative w-full max-w-md sm:max-w-xl lg:max-w-4xl  rounded-2xl 
         shadow-2xl 
-        px-6 lg:px-10 py-8">
+        px-6 lg:px-10 py-2">
 
         {/* HEADER */}
         <div className="flex justify-between items-center mb-6">
@@ -249,9 +242,13 @@ const CreateUser = () => {
           <button
             type="submit"
             className="lg:col-span-2 w-full h-11 
-            bg-purple-700 hover:bg-purple-800 
+           
             rounded-xl text-sm font-medium 
             transition mt-2"
+                            style={{
+                  background:
+                    "linear-gradient(135deg,#6d28d9 0%,#7c3aed 40%,#9333ea 100%)",
+                }}
           >
             Crear cuenta
           </button>
