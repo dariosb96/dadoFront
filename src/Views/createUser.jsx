@@ -72,12 +72,12 @@ const CreateUser = () => {
   };
 
   const inputStyle =
-    "flex-1 h-10 bg-white/5 border border-white/10 rounded-xl px-4 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600";
+    "flex-1 h-10 bg-gray-900 border border-gray-800 rounded-xl px-4 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600";
 
   const iconStyle = "w-5 h-5 text-gray-400";
 
   return (
-    <div className="relative min-h-screen bg-black flex justify-center items-center px-4 py-10 overflow-hidden">
+    <div className="relative min-h-screen  flex justify-center items-center px-4 py-4 overflow-hidden">
 
       {/* GRADIENTE SUPERIOR */}
       <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-purple-900/20 to-transparent blur-3xl pointer-events-none" />
@@ -97,7 +97,7 @@ const CreateUser = () => {
         <div className="flex justify-between items-center mb-6">
           <Link
             to="/"
-            className="flex items-center gap-2 text-gray-400 hover:text-white text-sm transition"
+            className="flex items-center gap-2 text-gray-300 hover:text-white text-sm transition"
           >
             <ArrowLeft size={16} />
             Volver
@@ -106,7 +106,7 @@ const CreateUser = () => {
           <img src={logo} alt="logo" className="w-6 lg:w-10" />
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-semibold text-white text-center lg:text-left mb-6">
+        <h1 className="text-2xl md:text-3xl font-semibold text-white text-center lg:text-center mb-8">
           Crear cuenta
         </h1>
 
@@ -120,7 +120,7 @@ const CreateUser = () => {
         >
 
           {/* AVATAR */}
-          <div className="flex flex-col items-center lg:items-start">
+          <div className="flex flex-col items-center lg:items-center">
 
             <div
               className={`relative transition-all duration-300
