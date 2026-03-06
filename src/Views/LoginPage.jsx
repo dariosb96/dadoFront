@@ -74,7 +74,7 @@ const Login = () => {
         <div
           className="hidden lg:flex w-[46%] xl:w-[48%] relative flex-col justify-between p-12 xl:p-16 overflow-hidden flex-shrink-0"
           style={{
-            background: 'radial-gradient(ellipse 80% 70% at 55% 35%, #430c7a 0%, #12022b 45%, #000000 100%)'
+            background: 'radial-gradient(ellipse 80% 70% at 55% 35%, #2e005c 0%, #12022b 45%, #000000 100%)'
           }}
         >
 

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchCatalogByUser } from "../Redux/actions/Products/catalog_actions";
 import { useParams, useSearchParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import logo from "../assets/logo-black.png";
+import logo from "../assets/logo.png";
 
 
 const normalizeImages = (images) => {
@@ -27,7 +27,7 @@ const ImageCarousel = ({ images = [], fixedHeight = 200, onImageClick }) => {
   if (!imgs.length) {
     return (
       <div
-        className="bg-gray-900 flex items-center justify-center rounded-xl"
+        className="bg-gray-900 bg-opacity-25 flex items-center justify-center rounded-xl"
         style={{ height: fixedHeight }}
       >
         <span className="text-gray-100 text-sm">Sin imagen</span>
@@ -43,7 +43,7 @@ const ImageCarousel = ({ images = [], fixedHeight = 200, onImageClick }) => {
   return (
     <div className="w-full">
       <div
-        className="relative rounded-xl overflow-hidden bg-gray-900"
+        className="relative rounded-xl overflow-hidden bg-gray-900 bg-opacity-25"
         style={{ height: fixedHeight }}
       >
         <img
@@ -98,7 +98,7 @@ const CatalogProductCard = ({ product, openModal }) => {
   };
 
   return (
-    <div className="bg-gray-900 bg-opacity-75 rounded-xl shadow-sm hover:shadow-lg transition p-2 flex flex-col justify-between">
+    <div className="bg-gray-900 bg-opacity-25 rounded-xl shadow-sm hover:shadow-lg transition p-2 flex flex-col justify-between">
       
       <ImageCarousel
         images={active?._images ?? productImages}
@@ -174,8 +174,8 @@ const CatalogPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
 
-      <div className="flex bg-white flex-col items-center py-1 gap-1 bg-opacity-25 rounded-full">
-        <img src={logo} className="w-5" />
+      <div className="flex  flex-col items-center py-1 gap-1 bg-opacity-25 rounded-full">
+        <img src={logo} className="w-8" />
 
         {showBusiness && (
           <h1 className="text-2xl font-bold text-gray-800">

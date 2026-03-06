@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllCatalogs } from "../Redux/actions/Products/allcatalogs_actions";
 import { selectCatalogsWithCategories } from "../Redux/actions/Products/catalogSelector";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/logo.png";
+
 
 
 
@@ -24,7 +26,9 @@ export default function CatalogList() {
   return (
       
     <div className="text-black  bg-opacity-75 py-2 px-6 text-white rounded-xl">
-     
+           <div className="flex  flex-col items-center py-1 gap-1 bg-opacity-25 rounded-full">
+             <img src={logo} className="w-8" />
+     </div>
       <span className="text-2xl font-semibold "> Catálogos públicos</span>
       <div className="max-w-4xl mx-auto grid gap-3 md:grid-cols-3 lg:grid-cols-4 py-2 pt-5 sm:grid-cols-2">
         {catalogs.map((c) => (
@@ -32,7 +36,7 @@ export default function CatalogList() {
             key={c.id}
            onClick={() => navigate(`/catalog/${c.id}`)}
 
-            className="bg-gray-900 shadow-lg rounded-2xl p-6 cursor-pointer hover:shadow-2xl hover:scale-105 transition-transform"
+            className="bg-gray-800 bg-opacity-25 shadow-lg rounded-2xl p-6 cursor-pointer hover:shadow-2xl hover:scale-105 transition-transform"
           >
             <h2 className="text-xl font-semibold text-gray-200 mb-3">
                {c.businessName}
