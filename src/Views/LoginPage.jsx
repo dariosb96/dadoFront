@@ -181,10 +181,10 @@ const Login = () => {
                 <label className="text-xs text-zinc-500">Correo</label>
 
                 <div
-                  className={`flex items-center gap-3 rounded-xl px-4 py-3 transition ${
+                  className={`flex items-center gap-3 rounded-xl px-4 py-2 transition ${
                     focused === "email"
-                      ? "bg-purple-950/40 ring-1 ring-purple-600"
-                      : "bg-zinc-900 ring-1 ring-zinc-800"
+                      ? "bg-purple-800 bg-opacity-25 ring-1 ring-purple-600"
+                      : "bg-gray-700 bg-opacity-25 ring-1 ring-zinc-800"
                   }`}
                 >
                   <Mail size={15} className="text-zinc-500" />
@@ -207,10 +207,10 @@ const Login = () => {
                 <label className="text-xs text-zinc-500">Contraseña</label>
 
                 <div
-                  className={`flex items-center gap-3 rounded-xl px-4 py-3 transition ${
+                  className={`flex items-center gap-3 rounded-xl px-4 py-1 transition ${
                     focused === "password"
-                      ? "bg-purple-950/40 ring-1 ring-purple-600"
-                      : "bg-zinc-900 ring-1 ring-zinc-800"
+                        ? "bg-purple-800 bg-opacity-25 ring-1 ring-purple-600"
+                      : "bg-gray-700 bg-opacity-25 ring-1 ring-zinc-800"
                   }`}
                 >
                   <Lock size={15} className="text-zinc-500" />
@@ -222,7 +222,7 @@ const Login = () => {
                     onFocus={() => setFocused("password")}
                     onBlur={() => setFocused("")}
                     placeholder="••••••••"
-                    className="flex-1 bg-transparent text-white text-sm outline-none"
+                   className="flex-1 bg-transparent text-white text-sm outline-none"
                   />
 
                   <button
@@ -237,7 +237,7 @@ const Login = () => {
 
               {/* REMEMBER */}
 
-              <label className="flex items-center gap-3 text-xs text-zinc-500 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs text-zinc-500 cursor-pointer px-1">
                 <input
                   type="checkbox"
                   checked={rememberMe}
