@@ -39,13 +39,11 @@ const Login = () => {
 
   return (
     <>
-      {/* Google Font — Syne para headlines, DM Sans para cuerpo */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap');
         .font-syne   { font-family: 'Syne', sans-serif; }
         .font-dm     { font-family: 'DM Sans', sans-serif; }
 
-        /* Entrada suave del panel del formulario */
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(18px); }
           to   { opacity: 1; transform: translateY(0);    }
@@ -57,7 +55,6 @@ const Login = () => {
         .anim-delay-4 { animation-delay: 0.26s; }
         .anim-delay-5 { animation-delay: 0.33s; }
 
-        /* Input nativo — quitar fondo amarillo de autocompletado */
         input:-webkit-autofill,
         input:-webkit-autofill:focus {
           -webkit-box-shadow: 0 0 0 1000px #18181b inset !important;
@@ -68,21 +65,16 @@ const Login = () => {
 
       <div className="font-dm min-h-screen bg-zinc-950 flex flex-col lg:flex-row overflow-hidden">
 
-        {/* ════════════════════════════════════════
-            PANEL IZQUIERDO — branding / features
-        ════════════════════════════════════════ */}
+        {/* PANEL IZQUIERDO */}
         <div
           className="hidden lg:flex w-[46%] xl:w-[48%] relative flex-col justify-between p-12 xl:p-16 overflow-hidden flex-shrink-0"
           style={{
             background: 'radial-gradient(ellipse 80% 70% at 55% 35%, #2e005c 0%, #12022b 45%, #000000 100%)'
           }}
         >
-
-          {/* Orbs de luz */}
           <div className="absolute -top-20 -left-20 w-96 h-96 bg-purple-800/25 rounded-full blur-[120px] pointer-events-none" />
           <div className="absolute bottom-0 right-0 w-72 h-72 bg-violet-900/30 rounded-full blur-[90px] pointer-events-none" />
 
-          {/* Líneas decorativas diagonales */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.06]">
             {[...Array(6)].map((_, i) => (
               <div key={i}
@@ -92,7 +84,6 @@ const Login = () => {
             ))}
           </div>
 
-          {/* Logo + nombre */}
           <div className="relative z-10 flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-purple-500/20 ring-1 ring-purple-400/20 flex items-center justify-center">
               <img src={logo} alt="Logo" className="w-4.5 h-4.5 object-contain" />
@@ -100,9 +91,7 @@ const Login = () => {
             <span className="text-purple-200/50 text-sm font-medium tracking-wider">DADDO</span>
           </div>
 
-          {/* Copy principal */}
           <div className="relative z-10 -mt-8">
-
             <h2 className="font-syne text-white text-4xl xl:text-5xl font-bold leading-[1.1] tracking-tight mb-5">
               Gestiona tu<br />
               <span className="text-transparent bg-clip-text"
@@ -114,7 +103,6 @@ const Login = () => {
               Inventario, ventas y estadísticas integrados en una sola plataforma diseñada para crecer contigo.
             </p>
 
-            {/* Feature cards */}
             <div className="mt-8 flex flex-col gap-3">
               {features.map(({ icon: Icon, label, sub }) => (
                 <div key={label} className="flex items-center gap-3.5 p-3 rounded-xl bg-white/[0.04] ring-1 ring-white/[0.06] backdrop-blur-sm">
@@ -130,23 +118,16 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Footer */}
           <p className="relative z-10 text-zinc-800 text-xs">© 2025 · Todos los derechos reservados</p>
         </div>
 
-        {/* ════════════════════════════════════════
-            PANEL DERECHO — formulario
-        ════════════════════════════════════════ */}
         {/* PANEL DERECHO */}
-
-        <div className="flex-1 flex items-center justify-center relative px-8">
-
-          {/* glow de fondo */}
+        {/* ✅ FIX: px-8 → px-4 sm:px-8 para dar espacio en mobile */}
+        <div className="flex-1 flex items-center justify-center relative px-4 sm:px-8">
 
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(124,58,237,0.12),transparent_60%)]" />
 
-          {/* CARD GLASS */}
-
+          {/* ✅ FIX: px-8 py-10 → px-5 py-8 sm:px-8 sm:py-10 */}
           <div
             className="
             relative
@@ -156,8 +137,8 @@ const Login = () => {
             backdrop-blur-xl
             ring-1 ring-white/[0.08]
             rounded-2xl
-            px-8
-            py-10
+            px-5 py-8
+            sm:px-8 sm:py-10
             shadow-[0_10px_40px_rgba(0,0,0,0.6)]
           "
           >
@@ -176,19 +157,18 @@ const Login = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
               {/* EMAIL */}
-
               <div className="flex flex-col gap-2">
                 <label className="text-xs text-zinc-500">Correo</label>
 
+                {/* ✅ FIX: px-4 gap-3 → px-3 gap-2 para que el icono no se corte */}
                 <div
-                  className={`flex items-center gap-3 rounded-xl px-4 py-2 transition ${
+                  className={`flex items-center gap-2 rounded-xl px-3 py-2 transition ${
                     focused === "email"
                       ? "bg-purple-800 bg-opacity-25 ring-1 ring-purple-600"
                       : "bg-gray-700 bg-opacity-25 ring-1 ring-zinc-800"
                   }`}
                 >
-                  <Mail size={15} className="text-zinc-500" />
-
+                  <Mail size={15} className="text-zinc-500 flex-shrink-0" />
                   <input
                     type="email"
                     value={useremail}
@@ -196,25 +176,24 @@ const Login = () => {
                     onFocus={() => setFocused("email")}
                     onBlur={() => setFocused("")}
                     placeholder="tu@correo.com"
-                    className="flex-1 bg-transparent text-white text-sm outline-none"
+                    className="flex-1 bg-transparent text-white text-sm outline-none min-w-0"
                   />
                 </div>
               </div>
 
               {/* PASSWORD */}
-
               <div className="flex flex-col gap-2">
                 <label className="text-xs text-zinc-500">Contraseña</label>
 
+                {/* ✅ FIX: px-4 gap-3 py-1 → px-3 gap-2 py-2 */}
                 <div
-                  className={`flex items-center gap-3 rounded-xl px-4 py-1 transition ${
+                  className={`flex items-center gap-2 rounded-xl px-3 py-2 transition ${
                     focused === "password"
                         ? "bg-purple-800 bg-opacity-25 ring-1 ring-purple-600"
                       : "bg-gray-700 bg-opacity-25 ring-1 ring-zinc-800"
                   }`}
                 >
-                  <Lock size={15} className="text-zinc-500" />
-
+                  <Lock size={15} className="text-zinc-500 flex-shrink-0" />
                   <input
                     type={showPassword ? "text" : "password"}
                     value={userpassword}
@@ -222,21 +201,19 @@ const Login = () => {
                     onFocus={() => setFocused("password")}
                     onBlur={() => setFocused("")}
                     placeholder="••••••••"
-                   className="flex-1 bg-transparent text-white text-sm outline-none"
+                    className="flex-1 bg-transparent text-white text-sm outline-none min-w-0"
                   />
-
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="text-zinc-500 hover:text-white"
+                    className="text-zinc-500 bg-gray-800 bg-opacity-50 hover:text-white flex-shrink-0"
                   >
-                    {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                    {showPassword ? <EyeOff size={12} /> : <Eye size={12} />}
                   </button>
                 </div>
               </div>
 
               {/* REMEMBER */}
-
               <label className="flex items-center gap-2 text-xs text-zinc-500 cursor-pointer px-1">
                 <input
                   type="checkbox"
@@ -247,7 +224,6 @@ const Login = () => {
               </label>
 
               {/* BOTON */}
-
               <button
                 type="submit"
                 disabled={loading}
